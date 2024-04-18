@@ -57,7 +57,7 @@ function App() {
 
 <div style={headerStyle}>
   
-        <img src="/mm.png" alt="MelodyAddictLogo" style={logoStyle} />
+        <img src="/Melody.png" alt="MelodyAddictLogo" style={logoStyle} />
         <h3 style={{color:'white', fontFamily: 'Roboto, sans-serif' }}>Fastest Highest Quality Music Downloader (320kbps)</h3>
 
       </div>
