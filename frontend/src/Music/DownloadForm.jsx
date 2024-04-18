@@ -57,7 +57,7 @@ function MusicDownloader() {
           </label>
           <button type="submit" className="download-button" disabled={loading}>Download</button>
         </form>
-        {loading && <p className="loading">Loading...</p>}
+        {loading && <p className="loading">Downloading...</p>}
        
 
         {message && !loading && <p className={`message ${isSuccess ? 'success' : 'error'}`}>{message}</p>}

@@ -23,7 +23,7 @@ function PlaylistDownloader() {
       if (response.ok) {
         setMessage(data.message);
         setIsSuccess(true);  // Update success status
-        toast.success('Song downloaded successfully');
+        toast.success('Playlist downloaded successfully');
       } else {
         setMessage(`Error: ${data.message}`);
         setIsSuccess(false);  // Update success status on error
@@ -53,7 +53,7 @@ function PlaylistDownloader() {
         </label>
         <button type="submit"   className="download-button"disabled={loading}>Download</button>
       </form>
-      {loading && <p className="loading">Loading...</p>}
+      {loading && <p className="loading">Downloading...</p>}
    
       {message && !loading && <p className={`message ${isSuccess ? 'success' : 'error'}`}>{message}</p>}
     </div>

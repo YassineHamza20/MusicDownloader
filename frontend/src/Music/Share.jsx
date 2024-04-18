@@ -32,17 +32,17 @@ const ShareButton = () => {
 
   return (
     <>
-     <button onClick={handleShare} style={{
-  margin: '10px',
-  backgroundColor: '#25c9d2',  // Green background
-  color: 'white',               // White text
-  padding: '5px 10px',         // Padding around the text
-  border: 'none',               // No border
-  borderRadius: '5px',          // Rounded corners
-  cursor: 'pointer',            // Pointer cursor on hover
-  fontSize: '15px',             // Font size
-              
-}}>
+      <button onClick={handleShare} style={{
+    margin: '10px',
+    backgroundColor: '#081d48',  // Green background
+    color: 'white',               // White text
+    padding: '5px 10px',         // Padding around the text
+    border: 'none',               // No border
+    borderRadius: '5px',          // Rounded corners
+    cursor: 'pointer',            // Pointer cursor on hover
+    fontSize: '14px',             // Font size
+                
+  }}>
   Share
 </button>
       <ToastContainer />

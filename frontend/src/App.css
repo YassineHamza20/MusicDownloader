@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  color: rgb(88, 204, 239); /* Set text color to white */
+  color: rgb(232, 237, 238); /* Set text color to white */
 }
 
 @keyframes logo-spin {
@@ -19,16 +19,29 @@
 
 /* src/index.css */
 body {
-  background-image: url('/music.jpg');
+  background-image: url('/Music.png');
   background-size: cover;   /* Cover the entire page */
   background-position: center; /* Center the background image */
-  background-repeat: no-repeat; /* Do not repeat the image */
+  background-repeat: repeat; /* Do not repeat the image */
   height: 100vh; /* Full height */
   margin: 0; /* Remove default margin */
   color: white; /* Set text color to white */
 }
+/* Example for adjusting settings in landscape mode */
+@media (max-width: 768px) and (orientation: landscape) {
+  body {
+    background-size: contain;
+    min-height: 100vh;
+  }
+}
+
 p{
-  color: aqua;
+  color: rgb(255, 255, 255);
   font-family: 'Open Sans', sans-serif; /* Example font-family */
   font-size: small;
+}
+@media (max-width: 768px) {
+  body {
+    background-position: top center; /* Adjust as needed */
+  }
 }
