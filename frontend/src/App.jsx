@@ -22,13 +22,13 @@ function App() {
     <>
     
       <div style={{ marginBottom: '50px', textAlign: 'center' }}>
-        <img src="/Melody.png" alt="MelodyAddictLogo" style={{ width: '140px', animation: 'logo-spin infinite 20s linear' }} />
-        <h3 style={{ color: 'white' }}>Fastest Highest Quality Music Downloader (320kbps)</h3>
+        <img src="/Melody.png" alt="MelodyAddictLogo" style={{ width: '140px', animation: 'logo-spin infinite 10s linear' }} />
+        <h3 style={{ color: 'white' }}>Fastest High Quality Music Downloader (320kbps)</h3>
         
       </div>
     <div style={{ marginBottom: '45px', textAlign: 'center' }}>
     <button onClick={toggleComponentView} style={{
-          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '16px'
+          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
         }}> MP4/MP3</button>
     </div>
       <BrowserRouter>
@@ -50,10 +50,10 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
+      <div style={{ marginTop: '35px', textAlign: 'center' }}>
         
         <button onClick={togglePopup} style={{
-          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '16px'
+          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
         }}>About me</button>
         {showPopup && <AboutMePopup />}
       </div>

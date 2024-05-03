@@ -38,7 +38,7 @@ const ShareButton = () => {
     color: 'white',               // White text
     padding: '5px 10px',         // Padding around the text
     border: 'none',               // No border
-    borderRadius: '5px',          // Rounded corners
+    borderRadius: '20px',          // Rounded corners
     cursor: 'pointer',            // Pointer cursor on hover
     fontSize: '14px',             // Font size
                 
