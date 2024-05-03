@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './PlaylistDownloader.css';  // Import CSS file for styles
 
-function PlaylistDownloader() {
+function PlaylistDownloaderVideo() {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ function PlaylistDownloader() {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/playlist', {
+      const response = await fetch('http://localhost:5000/videoplaylist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_url: youtubeUrl })
@@ -40,7 +40,7 @@ function PlaylistDownloader() {
   return (
     <>
     <div className="music-downloader-container">
-      <h1>Download A Playlist as Mp3 </h1>
+      <h1>Download A Playlist as Mp4 </h1>
       <form onSubmit={handleSubmit} className="downloader-form">
         <label>
           <span>Enter YouTube Playlist URL:</span>
@@ -51,7 +51,7 @@ function PlaylistDownloader() {
             placeholder="Paste YouTube playlist link here"
           />
         </label>
-        <button type="submit"   className="download-button"disabled={loading}>Download Playlist</button>
+        <button type="submit"   className="download-button"disabled={loading}>Download Video Playlist</button>
       </form>
       {loading && <p className="loading">Downloading...</p>}
    
@@ -62,4 +62,4 @@ function PlaylistDownloader() {
     </>);
 }
 
-export default PlaylistDownloader;
+export default PlaylistDownloaderVideo;

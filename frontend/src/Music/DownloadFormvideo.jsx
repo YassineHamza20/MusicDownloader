@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function MusicDownloader() {
+function VideoDownloader() {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ function MusicDownloader() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/music', {
+      const response = await fetch('http://localhost:5000/video', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_url: youtubeUrl })
@@ -43,8 +43,7 @@ function MusicDownloader() {
     <>
     <div className="app-container"> {/* New container for flex display */}
       <div className="music-downloader-container">
-       
-        <h1>Download One Song As Mp3</h1>
+        <h1> Download One Video As Mp4</h1>
         <form onSubmit={handleSubmit} className="downloader-form">
           <label className="input-label">
             <span>Enter YouTube video URL:</span>
@@ -56,7 +55,7 @@ function MusicDownloader() {
               className="text-input"
             />
           </label>
-          <button type="submit" className="download-button" disabled={loading}>Download Song</button>
+          <button type="submit" className="download-button" disabled={loading}>Download Video</button>
         </form>
         {loading && <p className="loading">Downloading...</p>}
        
@@ -73,4 +72,4 @@ function MusicDownloader() {
   );
 }
 
-export default MusicDownloader;
+export default VideoDownloader;

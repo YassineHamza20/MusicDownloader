@@ -1,12 +1,12 @@
 .music-downloader-container {
   max-width: 400px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #393d3d;
-  border-radius: 25px; /* Smaller border-radius for a softer look */
+  margin: 40px auto;
+   
+  border: 0px solid #393d3d;
+  border-radius: 55px; /* Smaller border-radius for a softer look */
   background: linear-gradient(to left, rgb(5, 39, 41) 0%, rgb(16, 82, 82) 20%, rgb(160, 190, 196) 80%);
-  box-shadow: 0 2px 5px rgba(13, 10, 10, 0.1);
-  overflow: hidden;
+   
+   
 }
 
 h1 {
@@ -48,6 +48,7 @@ h1 {
   cursor: pointer;
   font-size: 16px; /* Slightly larger font for better readability */
   transition: background-color 0.7s;
+  
 }
 
 .downloader-form button:hover {

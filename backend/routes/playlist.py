@@ -95,6 +95,6 @@ if __name__ == "__main__":
         print("Usage: python your_script.py <playlist_url>")
         sys.exit(1)
     playlist_url = sys.argv[1]
-    output_folder = Path.home() / 'Downloads' / 'MyPlayList'
+    output_folder = Path.home() / 'Downloads' / 'PlaylistMp3'
     download_playlist(playlist_url, output_folder)
     

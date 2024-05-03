@@ -1,5 +1,5 @@
 import sys
-from pytube import YouTube
+from pytube import YouTube, Playlist
 import os
 from pathlib import Path
 
@@ -15,40 +15,38 @@ def sanitize_filename(filename):
         filename = filename.replace(char, '_')
     return filename
 
-def download_video_as_mp4(youtube_url, output_folder):
+def download_video_as_mp4(video, output_folder):
     try:
-        yt = YouTube(youtube_url)
-        title = sanitize_filename(yt.title)
-        
-        # Create the 'Videos' folder if it doesn't exist
-        folder_path = output_folder / 'YouTube_Videos'
-        folder_path.mkdir(parents=True, exist_ok=True)
+        title = sanitize_filename(video.title)
+        # Ensure we use the correct file name
+        output_path = output_folder / f"{title}.mp4"
 
-        # Select the highest quality video stream with audio
-        video = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
-        if not video:
-            print(f"No suitable video stream found for {youtube_url}")
-            return
-
-        # Set the file name of the downloaded video
-        file_name = f"{title}.mp4"
-        output_path = folder_path / file_name
-
-        # Download the video
-        video.download(filename=output_path) # Ensure this points to a file path with a filename and extension
-
-        print(f"Downloaded: {output_path}")
-
+        # Select the highest quality video stream with audio and download it
+        stream = video.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
+        if stream:
+            stream.download(filename=output_path)
+            print(f"Downloaded: {output_path}")
+        else:
+            print(f"No suitable stream found for {title}")
     except Exception as e:
-        print(f"Error processing {youtube_url}: {e}")
+        print(f"Error downloading {video.title}: {e}")
 
+def download_playlist(playlist_url, output_folder):
+    playlist = Playlist(playlist_url)
+    print(f"Downloading playlist: {playlist.title}")
+    for video in playlist.videos:
+        download_video_as_mp4(video, output_folder)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <youtube_url>")
+        print("Usage: python your_script.py <youtube_url_or_playlist_url>")
         sys.exit(1)
 
-    youtube_url = sys.argv[1]
-    # Define the path for the 'Downloads' folder
-    output_folder = Path.home() / 'Downloads'
-    download_video_as_mp4(youtube_url, output_folder)
+    url = sys.argv[1]
+    output_folder = Path.home() / 'Downloads' / 'PlaylistMp4'
+    output_folder.mkdir(parents=True, exist_ok=True)  # Make sure the target directory exists
+    if 'playlist?list=' in url:
+        download_playlist(url, output_folder)
+    else:
+        yt = YouTube(url)
+        download_video_as_mp4(yt, output_folder)

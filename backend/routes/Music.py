@@ -82,5 +82,5 @@ if __name__ == "__main__":
 
     youtube_url = sys.argv[1]
     # Use the user's home directory to make the path dynamic
-    output_folder = Path.home() / 'Downloads' / 'Music'
+    output_folder = Path.home() / 'Downloads' 
     download_video_as_mp3(youtube_url, output_folder)
