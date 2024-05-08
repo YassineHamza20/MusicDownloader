@@ -13,6 +13,6 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "node": "^3.0.3"
+    "node": "^18.16.1"
   }
 }
