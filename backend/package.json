@@ -1,9 +1,11 @@
 {
-  "name": "MusicApp by Yassine",
+  "name": "MelodyAddict by Yassine",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npx nodemon app.js"
+    "start": "npx nodemon app.js",
+    "dev": "nodemon app.js"
+    
   },
   "dependencies": {
     "cors": "^2.8.5",
