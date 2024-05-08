@@ -15,7 +15,7 @@ function VideoDownloader() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/video', {
+      const response = await fetch('https://melodyaddict.onrender.com/video', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_url: youtubeUrl })

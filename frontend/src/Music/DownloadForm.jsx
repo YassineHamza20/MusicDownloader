@@ -15,7 +15,7 @@ function MusicDownloader() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/music', {
+      const response = await fetch('https://melodyaddict.onrender.com/music', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_url: youtubeUrl })

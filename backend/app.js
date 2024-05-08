@@ -3,10 +3,10 @@ const cors = require('cors');
 const app = express();
 app.use(express.json())
 app.use(cors({
-  origin: 'http://localhost:5173' // Allow requests from localhost:3000
+  origin: 'https://melodyaddict.onrender.com' // Allow requests from localhost:3000
 }));
 
-app.use("/", require("./routes/music"));
+app.use("/", require("./Routes/music"));
 
 
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));

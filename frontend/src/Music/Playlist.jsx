@@ -13,7 +13,7 @@ function PlaylistDownloader() {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/playlist', {
+      const response = await fetch('https://melodyaddict.onrender.com/playlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_url: youtubeUrl })
