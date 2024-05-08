@@ -6,7 +6,7 @@ app.use(cors({
   origin: 'https://melodyaddict.onrender.com' // Allow requests from localhost:3000
 }));
 
-app.use("/", require("./Routes/music"));
+app.use("/", require("./routes/music"));
 
 
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));
