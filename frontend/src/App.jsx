@@ -21,12 +21,11 @@ function App() {
   return (
     <>
     
-      <div style={{ marginBottom: '50px', textAlign: 'center' }}>
-        <img src="/Melody.png" alt="MelodyAddictLogo" style={{ width: '140px', animation: 'logo-spin infinite 10s linear' }} />
-        <h3 style={{ color: 'white' }}>Fastest High Quality Music Downloader (320kbps)</h3>
-        
+      <div style={{ marginBottom: '0px', textAlign: 'center' }}>
+        <img src="/Melody.png" alt="MelodyAddictLogo" style={{ marginRight: '930px',width: '100px', animation: 'logo-spin infinite 10s linear' }} />
+        <h3 style={{  marginTop: '-50px',color: 'white' }}>Fastest High Quality Music Downloader (320kbps)</h3>
       </div>
-    <div style={{ marginBottom: '45px', textAlign: 'center' }}>
+    <div style={{ marginBottom: '60px', textAlign: 'center' }}>
     <button onClick={toggleComponentView} style={{
           backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
         }}> MP4/MP3</button>

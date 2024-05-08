@@ -21,7 +21,8 @@ def download_video_as_mp4(youtube_url, output_folder):
         title = sanitize_filename(yt.title)
         
         # Create the 'Videos' folder if it doesn't exist
-        folder_path = output_folder / 'Videos'
+        #folder_path = output_folder / 'Videos'
+        folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
 
         # Select the highest quality video stream with audio

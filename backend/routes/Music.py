@@ -1,10 +1,12 @@
 import sys
-from pytube import YouTube
-from pydub import AudioSegment
 import requests
 import os
-from pathlib import Path
 import subprocess
+from pathlib import Path
+import unicodedata
+import re
+from pytube import YouTube
+from pydub import AudioSegment
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = r"C:\ffmpeg\bin\ffmpeg.exe"
@@ -15,17 +17,15 @@ AudioSegment.converter = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
-    """Sanitize filename by removing or replacing invalid characters."""
-    invalid_chars = '<>:"/\|?*'
-    for char in invalid_chars:
-        filename = filename.replace(char, '_')
+    """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
+    filename = re.sub(r'[<>:"/\\|?*]+', '_', filename)
     return filename
 
 def embed_album_art_ffmpeg(audio_path, image_path):
     """Embeds album art into an MP3 file using FFmpeg."""
     output_path = audio_path.with_suffix('.temp.mp3')
     cmd = [
-        'ffmpeg',
+        ffmpeg_path,
         '-i', str(audio_path),
         '-i', str(image_path),
         '-map', '0:0',
@@ -53,9 +53,9 @@ def download_video_as_mp3(youtube_url, output_folder):
         # Output filename incorporates the title
         output_path = folder_path / f"{title}.mp3"
         
-        # Convert to MP3
+        # Convert to MP3 using explicit encoding
         audio_segment = AudioSegment.from_file(temp_file)
-        audio_segment.export(output_path, format='mp3', bitrate="320k")
+        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
         # Download the thumbnail
         thumb_url = yt.thumbnail_url
@@ -82,5 +82,5 @@ if __name__ == "__main__":
 
     youtube_url = sys.argv[1]
     # Use the user's home directory to make the path dynamic
-    output_folder = Path.home() / 'Downloads' 
+    output_folder = Path.home() / 'Downloads'
     download_video_as_mp3(youtube_url, output_folder)
