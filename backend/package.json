@@ -2,14 +2,15 @@
   "name": "MusicApp by Yassine",
   "version": "0.0.0",
   "private": true,
-  
   "scripts": {
     "start": "npx nodemon app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "debug": "~2.6.9",
-    "express": "^4.18.2",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.0.3"
   }
 }
