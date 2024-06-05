@@ -42,7 +42,6 @@
 #       - key: PATH
 #         value: "/usr/bin/ffmpeg:$PATH"services:services:services:
 
-
 services:
   - type: web
     name: node-backend
@@ -67,5 +66,3 @@ services:
         value: "app.py"
       - key: FLASK_ENV
         value: "production"
-      - key: PORT  # Ensure PORT is passed from the environment
-        value: "5001"
