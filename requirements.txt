@@ -1,6 +1,6 @@
 # pydub
 # pytube
-# requests
+requests
 Flask==2.0.1  # Use the latest version suitable for your project
 pytube==11.0.1  # Example for other dependencies
 pydub==0.25.1
