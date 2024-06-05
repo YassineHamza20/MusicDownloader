@@ -30,24 +30,24 @@ services:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
 
-#   - type: web
-#     name: python-scripts
-#     env: python
-#     plan: free
-#     buildCommand: "pip install -r scripts/requirements.txt && apt-get update && apt-get install -y ffmpeg"
-#     startCommand: "cd scripts && python script.py"
-#     envVars:
-#       - key: PATH
-#         value: "/usr/bin/ffmpeg:$PATH"
- 
- 
- 
-    services:
-  - type: static
-    name: frontend-service
-    env: static
+  - type: web
+    name: python-scripts
+    env: python
     plan: free
-    buildCommand: "cd frontend && npm install && npm install -g serve && npm run build"
-    startCommand: "serve -s build"
-    publishDir: "frontend/build"
-    rootDirectory: "frontend"
+    buildCommand: "pip install -r scripts/requirements.txt && apt-get update && apt-get install -y ffmpeg"
+    startCommand: "cd scripts && python script.py"
+    envVars:
+      - key: PATH
+        value: "/usr/bin/ffmpeg:$PATH"
+ 
+ 
+ 
+  #   services:
+  # - type: static
+  #   name: frontend-service
+  #   env: static
+  #   plan: free
+  #   buildCommand: "cd frontend && npm install && npm install -g serve && npm run build"
+  #   startCommand: "serve -s build"
+  #   publishDir: "frontend/build"
+  #   rootDirectory: "frontend"
