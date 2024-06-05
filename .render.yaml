@@ -19,35 +19,54 @@
 #       - key: PATH
 #         value: "/opt/render/project/src/.venv/bin:$PATH"
 # #---------------------------------
-services:
+
+
+# services:
+#   - type: web
+#     name: node-backend
+#     env: node
+#     plan: free
+#     buildCommand: " npm install && apt-get update && apt-get install -y ffmpeg"
+#     startCommand: "node app.js"
+#     envVars:
+#       - key: PATH
+#         value: "/usr/bin/ffmpeg:$PATH"
+
+#   - type: web
+#     name: python-scripts
+#     env: python
+#     plan: free
+#     buildCommand: "pip install -r scripts/requirements.txt && apt-get update && apt-get install -y ffmpeg"
+#     startCommand: "cd scripts && python script.py"
+#     envVars:
+#       - key: PATH
+#         value: "/usr/bin/ffmpeg:$PATH"
+ 
+
+ services:
   - type: web
     name: node-backend
     env: node
     plan: free
-    buildCommand: " npm install && apt-get update && apt-get install -y ffmpeg"
+    buildCommand: "npm install && apt-get update && apt-get install -y ffmpeg"
     startCommand: "node app.js"
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
 
   - type: web
-    name: python-scripts
+    name: python-api
     env: python
     plan: free
-    buildCommand: "pip install -r scripts/requirements.txt && apt-get update && apt-get install -y ffmpeg"
-    startCommand: "cd scripts && python script.py"
+    buildCommand: "pip install -r requirements.txt && apt-get update && aptempt-get install -y ffmpeg"
+    startCommand: "flask run --host=0.0.0.0 --port=10000"
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
+      - key: FLASK_APP
+        value: "app.py"  # Ensure your Flask application entry point script is named app.py
+      - key: FLASK_ENV
+        value: "production"
+
  
- 
- 
-  #   services:
-  # - type: static
-  #   name: frontend-service
-  #   env: static
-  #   plan: free
-  #   buildCommand: "cd frontend && npm install && npm install -g serve && npm run build"
-  #   startCommand: "serve -s build"
-  #   publishDir: "frontend/build"
-  #   rootDirectory: "frontend"
+  
