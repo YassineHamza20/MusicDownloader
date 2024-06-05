@@ -42,7 +42,7 @@
 #       - key: PATH
 #         value: "/usr/bin/ffmpeg:$PATH"services:services:
 
-
+services:
   - type: web
     name: node-backend
     env: node
@@ -52,6 +52,8 @@
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
+      - key: PORT  # Explicitly set the port for Node.js service
+        value: "5000"
 
   - type: web
     name: python-scripts
