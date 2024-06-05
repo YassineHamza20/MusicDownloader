@@ -1,0 +1,8 @@
+# pydub
+# pytube
+requests
+Flask  # Use the latest version suitable for your project
+pytube==11.0.1  # Example for other dependencies
+pydub==0.25.1
+Werkzeug==1.0.1
+
