@@ -56,7 +56,7 @@ function App() {
         }}>About me</button>
         {showPopup && <AboutMePopup />}
       </div>
-      <p className='text-emboss'>If you like Music, please share it! <ShareButton /></p>
+      <p className='text-emboss'>If you like Music, please share it ! <ShareButton /></p>
       <ToastContainer />
     </>
   );

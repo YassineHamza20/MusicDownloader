@@ -1,20 +1,30 @@
 {
-  "name": "MusicApp by Yassine",
-  "version": "0.0.0",
+  "name": "frontend",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev:backend": "cd backend && npm start",
-    "dev:frontend": "cd frontend && npm start",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "start": "cd frontend && serve -s build",
-  
-    "build": "cd frontend && npm run build",
-    "postbuild": "echo 'Build is complete!'"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "serve": "^11.3.2"
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "framer-motion": "^11.1.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "concurrently": "^6.0.0"
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "vite": "^5.2.0"
   }
 }
