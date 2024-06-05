@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 });
 
 // Apply CORS specifically to the "/music" routes if needed separately
-app.use("/music", cors(corsOptions), require("./routes/music"));
+app.use("/", cors(corsOptions), require("./routes/music"));
 
 // Optional: Serve static files if your backend serves the frontend directly
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));
@@ -27,6 +27,10 @@ app.use("/music", cors(corsOptions), require("./routes/music"));
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 // });
+// Place this after all your API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
