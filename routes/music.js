@@ -13,58 +13,48 @@ const isValidYouTubeUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
     return pattern.test(url);
   };
+
   router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
-
+  
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
-        return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
+      return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
     }
-
+  
     const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'Music.py');
     const args = [youtube_url];
-    const outputFolder = path.join(__dirname, '..', 'Downloads');
-
+  
     try {
-        const process = spawn('python', [pythonScriptPath, ...args, outputFolder]);  // Pass the output folder to the script
-        let output = '';
-        let scriptError = '';
-
-        process.stdout.on('data', (data) => {
-            output += data.toString();
-        });
-
-        process.stderr.on('data', (data) => {
-            scriptError += data.toString();
-        });
-
-        process.on('close', (code) => {
-            if (code === 0) {
-                const filePath = output.trim();  // Assuming your Python script sends back the file path
-                res.download(filePath, (err) => {
-                    if (err) {
-                        console.error('Error sending file:', err);
-                    } else {
-                        fs.unlink(filePath, (error) => {
-                            if (error) {
-                                console.error('Error deleting file:', error);
-                            }
-                        });
-                    }
-                });
-            } else {
-                console.error('Python script failed:', scriptError);
-                res.status(500).json({
-                    success: false,
-                    message: 'Failed to download song.',
-                    error: scriptError
-                });
-            }
-        });
+      const process = spawn('python', [pythonScriptProgPath, ...args]);
+      let output = '';
+      let scriptError = '';
+  
+      process.stdout.on('data', (data) => {
+        output += data.toString();
+      });
+  
+      process.stderr.on('data', (data) => {
+        scriptError += data.toString();
+      });
+  
+      process.on('close', (code) => {
+        if (code === 0) {
+          res.status(200).json({ success: true, message: 'Song downloaded successfully', output });
+        } else {
+          console.error('Python script failed:', scriptError);
+          res.status(500).json({
+            success: false,
+            message: 'Failed to download song.',
+            error: scriptError || 'Unknown error'
+          });
+        }
+      });
     } catch (error) {
-        console.error('Server Error:', error);
-        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+      console.error('Server Error:', error);
+      res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
-});
+  });
+  
 
  
   router.post('/playlist', async (req, res) => {
