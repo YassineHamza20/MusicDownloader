@@ -1,6 +1,5 @@
-from flask import Flask, request, send_file, after_this_request
 import os
-import sys
+from flask import Flask, request, send_file, after_this_request
 from pathlib import Path
 import re
 from pytube import YouTube
@@ -50,4 +49,5 @@ def download_video():
             return {"message": "Failed to process the video"}, 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
