@@ -55,7 +55,7 @@
         value: "/usr/bin/ffmpeg:$PATH"
 
   - type: web
-    name: python-api
+    name: python-scripts
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt && apt-get update && aptempt-get install -y ffmpeg"
