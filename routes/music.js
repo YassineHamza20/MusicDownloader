@@ -14,18 +14,22 @@ const isValidYouTubeUrl = (url) => {
     return pattern.test(url);
   };
 
+   
   router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
   
+    // Validate the YouTube URL
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
       return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
     }
   
+    // Correct variable name: pythonScriptPath
     const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'Music.py');
     const args = [youtube_url];
   
     try {
-      const process = spawn('python', [pythonScriptProgPath, ...args]);
+      // Correct variable name used here
+      const process = spawn('python', [pythonScriptPath, ...args]);
       let output = '';
       let scriptError = '';
   
@@ -55,6 +59,7 @@ const isValidYouTubeUrl = (url) => {
     }
   });
   
+
 
  
   router.post('/playlist', async (req, res) => {
