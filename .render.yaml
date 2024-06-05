@@ -42,8 +42,7 @@
 #       - key: PATH
 #         value: "/usr/bin/ffmpeg:$PATH"
  
-
- services:
+services:
   - type: web
     name: node-backend
     env: node
@@ -53,8 +52,8 @@
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
-        
- - type: web
+
+  - type: web
     name: python-scripts
     env: python
     plan: free
@@ -67,6 +66,3 @@
         value: "app.py"
       - key: FLASK_ENV
         value: "production"
-
- 
-  
