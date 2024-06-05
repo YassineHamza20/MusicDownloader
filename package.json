@@ -1,0 +1,19 @@
+{
+  "name": "MusicApp by Yassine",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev:backend": "cd backend && npm start",
+    "dev:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start": "cd frontend && serve -s build",
+    "build": "cd frontend && npm run build",
+    "postbuild": "echo 'Build is complete!'"
+  },
+  "dependencies": {
+    "serve": "^11.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.0"
+  }
+}

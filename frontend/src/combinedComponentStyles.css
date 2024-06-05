@@ -1,0 +1,41 @@
+.cube-container {
+    perspective: 1000px;
+    height: 300px; /* Adjust based on content */
+    position: relative;
+  }
+  
+  .cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+  }
+  
+  .cube-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+  }
+  
+  .cube-face.front {
+    transform: rotateY(0deg) translateZ(150px); /* Adjust translateZ based on size */
+  }
+  
+  .cube-face.back {
+    transform: rotateY(180deg) translateZ(150px);
+  }
+  
+  .show-back .cube {
+    transform: rotateY(-180deg);
+  }
+  
+  .cube-button {
+    position: absolute; /* Ensuring button is always visible */
+    bottom: -50px; /* Positioning below the cube */
+    left: 50%; /* Centering the button */
+    transform: translateX(-50%); /* Precise center alignment */
+    z-index: 10; /* Ensure it's above the cube faces */
+  }
+  

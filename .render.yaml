@@ -1,0 +1,41 @@
+# services:
+#   - type: web
+#     name: backend
+#     env: node
+#     plan: free
+#     buildCommand: "cd backend && npm install"
+#     startCommand: "node backend/app.js"
+#     envVars:
+#       - key: PATH
+#         value: "/opt/render/project/src/.venv/bin:$PATH"
+
+#   - type: web
+#     name: python-scripts
+#     env: python
+#     plan: free
+#     buildCommand: "pip install -r scripts/requirements.txt"
+#     startCommand: "cd scripts && python script.py"
+#     envVars:
+#       - key: PATH
+#         value: "/opt/render/project/src/.venv/bin:$PATH"
+
+services:
+  - type: web
+    name: node-backend
+    env: node
+    plan: free
+    buildCommand: "cd backend && npm install && apt-get update && apt-get install -y ffmpeg"
+    startCommand: "node backend/app.js"
+    envVars:
+      - key: PATH
+        value: "/usr/bin/ffmpeg:$PATH"
+
+  - type: web
+    name: python-scripts
+    env: python
+    plan: free
+    buildCommand: "pip install -r scripts/requirements.txt && apt-get update && apt-get install -y ffmpeg"
+    startCommand: "cd scripts && python script.py"
+    envVars:
+      - key: PATH
+        value: "/usr/bin/ffmpeg:$PATH"
