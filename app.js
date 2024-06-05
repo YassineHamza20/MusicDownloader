@@ -5,7 +5,7 @@ app.use(express.json());
 
 // CORS options to allow specific origins
 const corsOptions = {
-    origin: ['https://melodyaddicts.netlify.app', 'https://musicdownloader1.onrender.com'], // Allow requests from both front-end and another specified domain
+    origin: ['https://melodyaddicts.netlify.app', 'https://musicdownloader1.onrender.com'],
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
@@ -24,12 +24,8 @@ app.use("/", cors(corsOptions), require("./routes/music"));
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Optional: Fallback route for handling SPA routing (if your Express serves your frontend directly)
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-// });
-// Place this after all your API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
