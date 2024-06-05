@@ -40,8 +40,7 @@
 #     startCommand: "cd scripts && python script.py"
 #     envVars:
 #       - key: PATH
-#         value: "/usr/bin/ffmpeg:$PATH"services:services:
-services:
+#         value: "/usr/bin/ffmpeg:$PATH"services:services:services:
   - type: web
     name: node-backend
     env: node
@@ -51,7 +50,7 @@ services:
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
-        
+
   - type: web
     name: python-scripts
     env: python
