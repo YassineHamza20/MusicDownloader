@@ -22,7 +22,11 @@ const isValidYouTubeUrl = (url) => {
       return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
     }
   
-    const pythonScriptPath = path.join(__dirname, '..', '../scripts/Music.py'); // Path to your Python script
+    //const pythonScriptPath = path.join(__dirname, '..', '../scripts/Music.py'); // Path to your Python script
+      const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'Music.py');
+      console.log("Python script path:", pythonScriptPath);
+
+
     const args = [youtube_url]; // Pass YouTube URL as an argument to the Python script
   
     try {
