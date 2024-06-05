@@ -52,15 +52,15 @@ services:
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
-      - key: PORT  # Explicitly set the port for Node.js service
+      - key: PORT
         value: "5000"
-
+        
   - type: web
     name: python-scripts
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt && apt-get update && apt-get install -y ffmpeg"
-    startCommand: "flask run --host=0.0.0.0 --port $PORT"
+    startCommand: "flask run --host=0.0.0.0 --port 5001"
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
@@ -68,3 +68,5 @@ services:
         value: "app.py"
       - key: FLASK_ENV
         value: "production"
+      - key: PORT
+        value: "5001"
