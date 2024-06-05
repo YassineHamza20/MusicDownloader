@@ -53,8 +53,8 @@
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
-
-  - type: web
+        
+ - type: web
     name: python-scripts
     env: python
     plan: free
@@ -64,7 +64,7 @@
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
       - key: FLASK_APP
-        value: "app.py"  # Ensure your Flask application entry point script is named app.py
+        value: "app.py"
       - key: FLASK_ENV
         value: "production"
 
