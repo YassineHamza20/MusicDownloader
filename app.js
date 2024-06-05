@@ -3,10 +3,13 @@ const cors = require('cors');
 const app = express();
 app.use(express.json())
 app.use(cors({
-  origin: 'http://localhost:5173' // Allow requests from localhost:3000
+  origin: 'https://musicdownloader1.onrender.com' // Allow requests from frontlocalhost:3000
 }));
 
 app.use("/", require("./routes/music"));
+app.get('/', (req, res) => {
+  res.send('Backend is running');
+});
 
 
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));
