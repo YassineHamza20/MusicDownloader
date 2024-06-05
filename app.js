@@ -1,25 +1,32 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-app.use(express.json())
-app.use(cors({
-  origin: 'https://musicdownloader1.onrender.com' // Allow requests from frontlocalhost:3000
-}));
+app.use(express.json());
 
-app.use("/", require("./routes/music"));
+// CORS options to allow specific origins
+const corsOptions = {
+    origin: ['https://melodyaddicts.netlify.app', 'https://musicdownloader1.onrender.com'], // Allow requests from both front-end and another specified domain
+    optionsSuccessStatus: 200 // For legacy browser support
+};
+
+// Apply CORS with the options
+app.use(cors(corsOptions));
+
+// Route for the homepage
 app.get('/', (req, res) => {
-  res.send('Backend is running');
+    res.send('Backend is running');
 });
 
+// Apply CORS specifically to the "/music" routes if needed separately
+app.use("/music", cors(corsOptions), require("./routes/music"));
 
+// Optional: Serve static files if your backend serves the frontend directly
 // app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-// Handles any requests that don't match the ones above
-// app.get('*', (req, res) =>{
-//     res.sendFile(path.join(__dirname+'../frontend/dist/index.html'));
+// Optional: Fallback route for handling SPA routing (if your Express serves your frontend directly)
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 // });
 
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, console.log(`Server started on port ${PORT}`));
-  
-module.exports = app;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
