@@ -43,7 +43,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder):
-    output_folder = os.path.join(os.path.dirname(__file__), 'public')  # Define output folder relative to script location
+    output_folder = os.path.join(os.path.dirname(__file__), '..', 'public')  # Define output folder relative to script location
     try:
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)

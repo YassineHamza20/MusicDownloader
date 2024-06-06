@@ -38,7 +38,7 @@ const isValidYouTubeUrl = (url) => {
 
         process.on('close', (code) => {
             if (code === 0 && output) {
-                const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${output}`;
+                const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodeURIComponent(output)}`;
                 res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
             } else {
                 console.error('Python script failed with code:', code, 'and error:', scriptError);
