@@ -14,8 +14,7 @@ const isValidYouTubeUrl = (url) => {
     return pattern.test(url);
   };
 
-
-router.post('/music', async (req, res) => {
+  router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -56,6 +55,7 @@ router.post('/music', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
+
 
 
   router.post('/playlist', async (req, res) => {

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 app.use(express.json());
 
@@ -12,14 +13,16 @@ const corsOptions = {
 // Apply CORS with the options
 app.use(cors(corsOptions));
 
+// Serve static files from the 'public' directory
+app.use('/downloads', express.static(path.join(__dirname, 'public')));
+
+// Apply the router
+app.use("/", require("./routes/music"));
+
 // Route for the homepage
 app.get('/', (req, res) => {
     res.send('Backend is running');
 });
-
-// Apply CORS specifically to the "/music" routes if needed separately
-app.use("/", cors(corsOptions), require("./routes/music"));
- 
 
 // Optional: Fallback route for handling SPA routing (if your Express serves your frontend directly)
 app.get('*', (req, res) => {
