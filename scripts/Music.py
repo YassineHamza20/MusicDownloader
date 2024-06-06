@@ -1,64 +1,89 @@
+import sys
+import requests
 import os
-from flask import Flask, request, send_file, after_this_request
+import subprocess
 from pathlib import Path
+import unicodedata
 import re
 from pytube import YouTube
 from pydub import AudioSegment
-import tempfile
-import socket
 
-app = Flask(__name__)
+# Set paths to ffmpeg and ffprobe for cross-platform compatibility
+ffmpeg_path = 'ffmpeg'  # Assumes ffmpeg is in the system PATH
+ffprobe_path = 'ffprobe'  # Assumes ffprobe is in the system PATH
+
+# Set pydub to use the ffmpeg installed on the system
+AudioSegment.converter = ffmpeg_path
+AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
     """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
-    return re.sub(r'[<>:"/\\|?*]+', '_', filename)
+    filename = re.sub(r'[<>:"/\\|?*]+', '_', filename)
+    return filename
 
-def is_valid_youtube_url(url):
-    """Validate YouTube URL."""
-    return bool(re.match(r'(https?://)?(www\.)?(youtube.com|youtu.be)/', url))
+def embed_album_art_ffmpeg(audio_path, image_path):
+    """Embeds album art into an MP3 file using FFmpeg."""
+    output_path = audio_path.with_suffix('.temp.mp3')
+    cmd = [
+        ffmpeg_path,
+        '-i', str(audio_path),
+        '-i', str(image_queue_path),
+        '-map', '0:0',
+        '-map', '1:0',
+        '-c', 'copy',
+        '-id3v2_version', '3',
+        '-metadata:s:v', 'title="Album cover"',
+        '-metadata:s:v', 'comment="Cover (front)"',
+        str(output_path)
+    ]
+    subprocess.run(cmd, check=True)
+    os.replace(output_path, audio_path)  # Replace original file with the new one
 
-@app.route('/music', methods=['POST'])
-def download_video():
-    youtube_url = request.json.get('youtube_url')
-    if not youtube_url or not is_valid_youtube_url(youtube_url):
-        return {"message": "Invalid URL"}, 400
+def download_video_as_mp3(youtube_url, output_folder):
+    try:
+        yt = YouTube(youtube_url)
+        title = sanitize_filename(yt.title)
+        folder_path = Path(output_folder)
+        folder_path.mkdir(parents=True, exist_ok=True)
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        temp_dir_path = Path(temp_dir)
-        try:
-            yt = YouTube(youtube_url)
-            title = sanitize_filename(yt.title)
-            output_path = temp_dir_path / f"{title}.mp3"
+        # Select the highest quality audio stream
+        video = yt.streams.get_audio_only()
+        temp_file = video.download(output_path=folder_path)
 
-            video = yt.streams.get_audio_only()
-            temp_file_path = Path(video.download(output_path=temp_dir_path))
+        # Output filename incorporates the title
+        output_path = folder_path / f"{title}.mp3"
+        
+        # Convert to MP3 using explicit encoding
+        audio_segment = AudioSegment.from_file(temp_file)
+        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
-            audio_segment = AudioSegment.from_file(temp_file_path)
-            audio_segment.export(output_path, format='mp3', bitrate="320k")
+        # Download the thumbnail
+        thumb_url = yt.thumbnail_url
+        response = requests.get(thumb_url)
+        thumb_path = folder_path / "thumbnail.jpg"
+        with open(thumb_path, 'wb') as thumb_file:
+            thumb_file.write(response.content)
 
-            os.remove(temp_file_path)
+        # Embed the thumbnail as album art
+        embed_album_art_ffmpeg(output_path, thumb_path)
 
-            @after_this_request
-            def remove_file(response):
-                os.remove(output_path)
-                return response
+        print(f"Downloaded and converted to MP3: {output_path}")
 
-            return send_half_file(str(output_path), as_attachment=True, download_name=f"{title}.mp3")
-
-        except Exception as e:
-            return {"message": f"Failed to process the video due to error: {e}"}, 500
-
-def check_port(port):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex(('localhost', port)) == 0
-
-port = 5001  # Example port number
-if check_port(port):
-    print(f"Port {port} is already in use")
-else:
-    print(f"Port {port} is available")
-    # Start Flask app here if port is available
+        # Cleanup temporary files
+        os.remove(temp_file)
+        os.remove(thumb_path)  # Remove thumbnail after embedding
+    except Exception as e:
+        print(f"Error processing {youtube_url}: {e}")
 
 if __name__ == "__main__":
-    from werkzeug.serving import run_simple
-    run_simple('0.0.0.0', port, app)  # Specify the port explicitly here
+    if len(sys.argv) != 2:
+        print("Usage: python your_script.py <youtube_url>")
+        sys.exit(1)
+
+    youtube_url = sys.argv[1]
+    # Determine the downloads folder based on the platform
+    if sys.platform == "win32":
+        output_folder = Path(os.getenv('USERPROFILE', ''), 'Downloads')
+    else:
+        output_folder = Path(os.getenv('HOME', ''), 'Downloads')
+    download_video_as_mp3(youtube_url, output_folder)
