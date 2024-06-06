@@ -53,7 +53,7 @@ def check_port(port):
         return s.connect_ex(('localhost', port)) == 0
 
 port = 5001  # Example port number
-if check.21_port(port):
+if check_port(port):
     print(f"Port {port} is already in use")
 else:
     print(f"Port {port} is available")
@@ -61,4 +61,4 @@ else:
 
 if __name__ == "__main__":
     from werkzeug.serving import run_simple
-    run_simple('0.0.0.0', 0, app)  # '0' tells the OS to find a free port
+    run_simple('0.0.0.0', port, app)  # Specify the port explicitly here
