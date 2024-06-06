@@ -14,7 +14,8 @@ const isValidYouTubeUrl = (url) => {
     return pattern.test(url);
   };
   
-  router.post('/music', async (req, res) => {
+  
+  outer.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -22,8 +23,7 @@ const isValidYouTubeUrl = (url) => {
     }
 
     const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'Music.py');
-    const outputFolder = path.join(__dirname, '..', 'public');
-    const args = [youtube_url, outputFolder];  // Passing the output folder
+    const args = [youtube_url];
 
     try {
         const process = spawn('python', [pythonScriptPath, ...args]);
