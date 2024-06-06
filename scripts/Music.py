@@ -67,6 +67,8 @@ if __name__ == "__main__":
         print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
-    output_folder = '/tmp'
+    # output_folder = '/tmp'
+    output_folder = Path.home() / 'Downloads'
+
     result = download_video_as_mp3(youtube_url, output_folder)
     sys.exit(result)
