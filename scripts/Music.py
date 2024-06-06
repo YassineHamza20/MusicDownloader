@@ -7,6 +7,7 @@ import re
 from pytube import YouTube
 from pydub import AudioSegment
 import traceback
+import urllib.parse
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -18,7 +19,9 @@ AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
     """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
-    return re.sub(r'[<>:"/\\|?*]+', '_', filename)
+    filename = re.sub(r'[<>:"/\\|?*]+', '_', filename)
+    filename = re.sub(r'\s+', '_', filename)  # Replace spaces with underscores
+    return filename
 
 def embed_album_art_ffmpeg(audio_path, image_path):
     """Embeds album art into an MP3 file using FFmpeg."""
@@ -39,7 +42,6 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
     os.replace(output_path, audio_path)
 
-    
 def download_video_as_mp3(youtube_url, output_folder):
     output_folder = os.path.join(os.path.dirname(__file__), 'public')
     try:
@@ -55,7 +57,7 @@ def download_video_as_mp3(youtube_url, output_folder):
 
         # Clean up and log success
         os.remove(temp_file)
-        print(output_path.name)  # Print the filename to stdout for Node.js to capture
+        print(urllib.parse.quote(output_path.name))  # Print the URL-safe filename to stdout for Node.js to capture
 
         return 0  # Exit successfully
     except Exception as e:
@@ -67,8 +69,6 @@ if __name__ == "__main__":
         print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
-    # output_folder = '/tmp'
-    output_folder = Path.home() / 'Downloads'
-
+    output_folder = '/tmp'
     result = download_video_as_mp3(youtube_url, output_folder)
     sys.exit(result)
