@@ -55,7 +55,7 @@ const isValidYouTubeUrl = (url) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
-const path = require('path');
+
 app.use('/downloads', express.static(path.join(__dirname, 'public')));
 
 
