@@ -13,7 +13,6 @@ const isValidYouTubeUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
     return pattern.test(url);
   };
-
   router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
