@@ -40,7 +40,6 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder):
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
     try:
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
@@ -54,8 +53,6 @@ def download_video_as_mp3(youtube_url, output_folder):
 
         # Clean up and log success
         os.remove(temp_file)
-        print(output_path.name)  # Only print the filename
-
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
@@ -66,7 +63,7 @@ if __name__ == "__main__":
         print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
-    output_folder = Path(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
     result = download_video_as_mp3(youtube_url, output_folder)
     if result:
         print(result)
