@@ -14,11 +14,10 @@ const isValidYouTubeUrl = (url) => {
     return pattern.test(url);
   };
 
-  
-  router.post('/music', async (req, res) => {
+
+router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
-    // Check if the YouTube URL is valid
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
         return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
     }
@@ -40,7 +39,6 @@ const isValidYouTubeUrl = (url) => {
         });
 
         process.on('close', (code) => {
-            // Handle the process close event to determine success or failure
             if (code === 0 && output) {
                 const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${output}`;
                 res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
@@ -58,8 +56,6 @@ const isValidYouTubeUrl = (url) => {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
-
- 
 
 
   router.post('/playlist', async (req, res) => {

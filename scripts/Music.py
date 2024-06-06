@@ -38,42 +38,35 @@ def embed_album_art_ffmpeg(audio_path, image_path):
         raise e
 
     os.replace(output_path, audio_path)
+
+    
 def download_video_as_mp3(youtube_url, output_folder):
-    output_folder = os.path.join(os.path.dirname(__file__), 'public')  # Define output folder relative to script location
+    output_folder = os.path.join(os.path.dirname(__file__), 'public')
     try:
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
-        folder_path.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
+        folder_path.mkdir(parents=True, exist_ok=True)
         video = yt.streams.get_audio_only()
-        temp_file = video.download(output_path=folder_path)  # Download the audio stream
-        output_path = folder_path / f"{title}.mp3"  # Path where the MP3 will be saved
+        temp_file = video.download(output_path=folder_path)
+        output_path = folder_path / f"{title}.mp3"
         audio_segment = AudioSegment.from_file(temp_file)
-        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})  # Export as MP3
+        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
-        # Download and embed thumbnail as album art
-        thumb_url = yt.thumbnail_url
-        response = requests.get(thumb_url)
-        thumb_path = folder_path / "thumbnail.jpg"
-        with open(thumb_path, 'wb') as thumb_file:
-            thumb_file.write(response.content)
-        embed_album_art_ffmpeg(output_path, thumb_path)  # Embed album art using FFmpeg
+        # Clean up and log success
+        os.remove(temp_file)
+        print(output_path.name)  # Print the filename to stdout for Node.js to capture
 
-        print(f"Downloaded and converted to MP3: {output_path}")
-        os.remove(temp_file)  # Clean up temporary video file
-        os.remove(thumb_path)  # Clean up downloaded thumbnail
-
-        return str(output_path.name)  # Return the filename for use in the Node.js response
+        return 0  # Exit successfully
     except Exception as e:
-        traceback.print_exc()  # This will print the stack trace to stderr
-        return str(e)  # Return the exception message instead of None
-
+        traceback.print_exc(file=sys.stderr)
+        return 1  # Exit with error
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <youtube_url>")
+        print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
     output_folder = '/tmp'
-    sys.exit(download_video_as_mp3(youtube_url, output_folder))
-    
+    result = download_video_as_mp3(youtube_url, output_folder)
+    sys.exit(result)

@@ -1,5 +1,3 @@
-# pydub
-# pytube
 requests
 Flask   
 pytube   
