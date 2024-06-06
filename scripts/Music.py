@@ -8,11 +8,11 @@ import re
 from pytube import YouTube
 from pydub import AudioSegment
 
-# Set paths to ffmpeg and ffprobe for cross-platform compatibility
+# Paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'  # Assumes ffmpeg is in the system PATH
 ffprobe_path = 'ffprobe'  # Assumes ffprobe is in the system PATH
 
-# Set pydub to use the ffmpeg installed on the system
+# Configuring pydub to use the ffmpeg installed on the system
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
 
@@ -27,7 +27,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     cmd = [
         ffmpeg_path,
         '-i', str(audio_path),
-        '-i', str(image_queue_path),
+        '-i', str(image_path),
         '-map', '0:0',
         '-map', '1:0',
         '-c', 'copy',
@@ -72,18 +72,16 @@ def download_video_as_mp3(youtube_url, output_folder):
         # Cleanup temporary files
         os.remove(temp_file)
         os.remove(thumb_path)  # Remove thumbnail after embedding
+        return 0  # Successful exit
     except Exception as e:
         print(f"Error processing {youtube_url}: {e}")
+        return 1  # Indicate error
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <youtube_url>")
+        print("Usage: python your_script.py <youtube_green_url>")
         sys.exit(1)
 
     youtube_url = sys.argv[1]
-    # Determine the downloads folder based on the platform
-    if sys.platform == "win32":
-        output_folder = Path(os.getenv('USERPROFILE', ''), 'Downloads')
-    else:
-        output_folder = Path(os.getenv('HOME', ''), 'Downloads')
-    download_video_as_mp3(youtube_url, output_folder)
+    output_folder = '/tmp'  # Use a temporary directory in production
+    sys.exit(download_video_as_mp3(youtube_url, output_folder))
