@@ -3,7 +3,6 @@ import requests
 import os
 import subprocess
 from pathlib import Path
-import unicodedata
 import re
 from pytube import YouTube
 from pydub import AudioSegment
@@ -37,7 +36,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
         str(output_path)
     ]
     subprocess.run(cmd, check=True)
-    os.replace(output_path, audio_path)  # Replace original file with the new one
+    os.replace(output - path, audio_path)  # Replace original file with the new one
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
@@ -79,7 +78,7 @@ def download_video_as_mp3(youtube_url, output_folder):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <youtube_green_url>")
+        print("Usage: python your_script.py <youtube_url>")  # Corrected 'youtube_green_url' to 'youtube_url'
         sys.exit(1)
 
     youtube_url = sys.argv[1]
