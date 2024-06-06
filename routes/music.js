@@ -14,7 +14,6 @@ const isValidYouTubeUrl = (url) => {
     return pattern.test(url);
   };
 
-
   router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
@@ -31,7 +30,7 @@ const isValidYouTubeUrl = (url) => {
         let scriptError = '';
 
         process.stdout.on('data', (data) => {
-            output += data.toString();
+            output += data.toString().trim();  // Capture the filename from Python script output
         });
 
         process.stderr.on('data', (data) => {
@@ -39,8 +38,9 @@ const isValidYouTubeUrl = (url) => {
         });
 
         process.on('close', (code) => {
-            if (code === 0) {
-                res.status(200).json({ success: true, message: 'Song downloaded successfully', output });
+            if (code === 0 && output) {
+                const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${output}`;
+                res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
             } else {
                 console.error('Python script failed with code:', code, 'and error:', scriptError);
                 res.status(500).json({
@@ -52,12 +52,13 @@ const isValidYouTubeUrl = (url) => {
         });
     } catch (error) {
         console.error('Error spawning Python script:', error);
-        res.status(500).json({ success: false, message: 'Internal server analytics', error: error.message });
+        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
+const path = require('path');
+app.use('/downloads', express.static(path.join(__dirname, 'public')));
 
 
- 
   router.post('/playlist', async (req, res) => {
     const { youtube_url } = req.body;
   
