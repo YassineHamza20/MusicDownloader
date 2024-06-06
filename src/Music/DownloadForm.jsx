@@ -9,54 +9,53 @@ function MusicDownloader() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-  
+
     try {
-      const response = await fetch('https://musicdownloader1.onrender.com/music', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ youtube_url: youtubeUrl })
-      });
-  
-      if (response.ok) {
-        // Handle the blob data for a file download
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        const contentDisposition = response.headers.get('Content-Disposition');
-        let filename = "download.mp3";  // Default filename if none is provided
-        if (contentDisposition) {
-          const match = contentDisposition.match(/filename="?(.+)"?/);
-          if (match) filename = match[1];
+        const response = await fetch('https://musicdownloader1.onrender.com/music', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ youtube_url: youtubeUrl })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                const downloadUrl = data.downloadUrl;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', ''); // Let the browser use the filename from the URL
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setMessage('Song downloaded successfully');
+                setIsSuccess(true);
+                toast.success('Song downloaded successfully');
+            } else {
+                setMessage(`Error: ${data.message}`);
+                setIsSuccess(false);
+                toast.error(`Error: ${data.message}`);
+            }
+        } else {
+            const errorData = await response.json();
+            setMessage(`Error: ${errorData.message}`);
+            setIsSuccess(false);
+            toast.error(`Error: ${errorData.message}`);
         }
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        window.URL.revokeObjectURL(url);
-        link.remove();
-  
-        setMessage('Song downloaded successfully');
-        setIsSuccess(true);
-        toast.success('Song downloaded successfully');
-      } else {
-        // If response is not ok, handle it as a json to read the error message
-        const errorData = await response.json();
-        setMessage(`Error: ${errorData.message}`);
-        setIsSuccess(false);
-        toast.error(`Error: ${errorData.message}`);
-      }
     } catch (error) {
-      console.error('Error:', error);
-      setMessage('Internal server error');
-      setIsSuccess(false);
-      toast.error('Internal server error');
+        console.error('Error:', error);
+        setMessage('Internal server error');
+        setIsSuccess(false);
+        toast.error('Internal server error');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
   
 
   return (
