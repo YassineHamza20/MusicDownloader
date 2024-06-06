@@ -35,8 +35,13 @@ def embed_album_art_ffmpeg(audio_path, image_path):
         '-metadata:s:v', 'comment="Cover (front)"',
         str(output_path)
     ]
-    subprocess.run(cmd, check=True)
-    os.replace(output - path, audio_path)  # Replace original file with the new one
+    try:
+        result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError as e:
+        print("FFmpeg command failed:", e.stderr.decode())
+        raise e  # Re-raise the exception to be caught by the calling function
+    os.replace(output_path, audio_path)  # Replace original file with the new one
+
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
