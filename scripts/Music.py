@@ -5,7 +5,7 @@ import re
 from pytube import YouTube
 from pydub import AudioSegment
 import tempfile
-
+import socket
 app = Flask(__name__)
 
 def sanitize_filename(filename):
@@ -47,7 +47,21 @@ def download_video():
         except Exception as e:
             print(f"Error processing {youtube_url}: {e}")
             return {"message": "Failed to process the video"}, 500
+        
+     
+
+def check_port(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) == 0
+
+port = 5001  # Example port number
+if check_port(port):
+    print(f"Port {port} is already in use")
+else:
+    print(f"Port {port} is available")
+    # Start Flask app here if port is available
+
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5001))  # Use the port provided by Render
-    app.run(host="0.0.0.0", port=port, debug=True)
+    from werkzeug.serving import run_simple
+    run_simple('0.0.0.0', 0, app)  # Here, '0' tells the OS to find a free port
