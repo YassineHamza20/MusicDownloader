@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 // Apply CORS specifically to the "/music" routes if needed separately
 app.use("/", cors(corsOptions), require("./routes/music"));
  
-x
+
 // Optional: Fallback route for handling SPA routing (if your Express serves your frontend directly)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
