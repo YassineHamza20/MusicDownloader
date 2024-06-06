@@ -13,8 +13,8 @@ const isValidYouTubeUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
     return pattern.test(url);
   };
-
-  router.post('/music', async (req, res) => {
+  
+router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -56,7 +56,7 @@ const isValidYouTubeUrl = (url) => {
     }
 });
 
-app.use('/downloads', express.static(path.join(__dirname, 'public')));
+ 
 
 
   router.post('/playlist', async (req, res) => {
