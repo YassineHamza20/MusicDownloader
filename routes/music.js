@@ -13,7 +13,7 @@ const isValidYouTubeUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
     return pattern.test(url);
   };
-
+  
   router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
@@ -22,7 +22,8 @@ const isValidYouTubeUrl = (url) => {
     }
 
     const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'Music.py');
-    const args = [youtube_url];
+    const outputFolder = path.join(__dirname, '..', 'public');
+    const args = [youtube_url, outputFolder];  // Passing the output folder
 
     try {
         const process = spawn('python', [pythonScriptPath, ...args]);
@@ -55,7 +56,7 @@ const isValidYouTubeUrl = (url) => {
         console.error('Error spawning Python script:', error);
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
-}); 
+});
 
   router.post('/playlist', async (req, res) => {
     const { youtube_url } = req.body;

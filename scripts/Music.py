@@ -63,11 +63,12 @@ def download_video_as_mp3(youtube_url, output_folder):
         return None  # Return None in case of error
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
+    if len(sys.argv) != 3:
+        print("Usage: python your_script.py <youtube_url> <output_folder>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
-    result = download_video_as_mp3(youtube_url)
+    output_folder = sys.argv[2]
+    result = download_video_as_mp3(youtube_url, output_folder)
     if result:
         print(result)
         sys.exit(0)
