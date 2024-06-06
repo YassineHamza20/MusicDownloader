@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 from pytube import YouTube
 from pydub import AudioSegment
+import traceback
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -64,8 +65,8 @@ def download_video_as_mp3(youtube_url, output_folder):
 
         return str(output_path.name)  # Return the filename for use in the Node.js response
     except Exception as e:
-        print(f"Error processing {youtube_url}: {e}")
-        return None  # Return None in case of error
+        traceback.print_exc()  # This will print the stack trace to stderr
+        return str(e)  # Return the exception message instead of None
 
 
 if __name__ == "__main__":

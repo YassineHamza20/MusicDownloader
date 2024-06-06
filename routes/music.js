@@ -13,10 +13,12 @@ const isValidYouTubeUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
     return pattern.test(url);
   };
+
   
-router.post('/music', async (req, res) => {
+  router.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
+    // Check if the YouTube URL is valid
     if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
         return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
     }
@@ -38,6 +40,7 @@ router.post('/music', async (req, res) => {
         });
 
         process.on('close', (code) => {
+            // Handle the process close event to determine success or failure
             if (code === 0 && output) {
                 const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${output}`;
                 res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
@@ -46,7 +49,7 @@ router.post('/music', async (req, res) => {
                 res.status(500).json({
                     success: false,
                     message: 'Failed to download song.',
-                    error: scriptError || 'Unknown error'
+                    error: scriptError || 'Unknown error detected, please check logs'
                 });
             }
         });
