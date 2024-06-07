@@ -23,13 +23,14 @@ function PlaylistDownloader() {
         if (response.ok) {
             const data = await response.json();
             if (data.success) {
-                const downloadUrl = data.downloadUrl;
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', ''); // Let the browser use the filename from the URL
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                data.downloadUrls.forEach(downloadUrl => {
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.setAttribute('download', ''); // Let the browser use the filename from the URL
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
 
                 setMessage('Playlist downloaded successfully');
                 setIsSuccess(true);
@@ -54,6 +55,7 @@ function PlaylistDownloader() {
         setLoading(false);
     }
 };
+
 
   return (
     <>
