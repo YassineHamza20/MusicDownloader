@@ -19,20 +19,25 @@ def embed_album_art_ffmpeg(video_path, image_path):
     """Embeds album art into an MP4 file using FFmpeg."""
     output_path = video_path.with_suffix('.temp.mp4')
     cmd = [
-        ffmpeg_path, '-i', str(video_path), '-i', str(image_path),
-        '-map', '0', '-map', '1', '-c', 'copy', '-disposition:v:1', 'attached_pic',
-        '-metadata:s:v:1', 'title="Album cover"', '-metadata:s:v:1', 'comment="Cover (front)"',
+        ffmpeg_path, '-i', str(video_path), '-i', str(image_image_path),
+        '-map', '0:v', '-map', '0:a', '-map', '1:v',  # Explicit stream mapping
+        '-c:v', 'copy', '-c:a', 'copy', '-c:v:2', 'mjpeg',  # Explicit codec specification for image
+        '-disposition:v:2', 'attached_pic',
+        '-metadata:s:v:2', 'title="Album cover"', '-metadata:s:v:2', 'comment="Cover (front)"',
         str(output_path)
     ]
     try:
         result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.stderr:
             print("FFmpeg stderr:", result.stderr.decode())
-    except subprocess.CalledProcessError as e:
+        if result.stdout:
+            print("FFmpeg stdout:", result.stdout.decode())
+    except subprocess.CalledProcess.rror as e:
         print("FFmpeg command failed with error:", e.stderr.decode())
         raise e
 
     os.replace(output_path, video_path)
+
 
 
 
