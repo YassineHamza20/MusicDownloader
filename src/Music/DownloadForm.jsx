@@ -10,8 +10,7 @@ function MusicDownloader() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
 
-
-  const handleSubmit = async (event) => {
+const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
@@ -26,16 +25,16 @@ function MusicDownloader() {
             const data = await response.json();
             if (data.success) {
                 const downloadUrl = data.downloadUrl;
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', ''); // Let the browser use the filename from the URL
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                setMessage('Song downloaded successfully');
+                setMessage('Song downloaded successfully. Click the link to play or download.');
                 setIsSuccess(true);
                 toast.success('Song downloaded successfully');
+
+                // Provide a link for the user to click
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.textContent = 'Click here to play or download the song';
+                link.target = '_blank'; // Open in a new tab
+                document.body.appendChild(link);
             } else {
                 setMessage(`Error: ${data.message}`);
                 setIsSuccess(false);
@@ -56,6 +55,7 @@ function MusicDownloader() {
         setLoading(false);
     }
 };
+
 
 
   
