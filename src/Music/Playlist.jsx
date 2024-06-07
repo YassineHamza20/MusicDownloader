@@ -9,7 +9,7 @@ function PlaylistDownloader() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);  // New state to track response status
 
-  const handlePlaylistSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
