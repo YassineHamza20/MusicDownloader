@@ -51,20 +51,8 @@ def download_video_as_mp3(youtube_url, output_folder):
         audio_segment = AudioSegment.from_file(temp_file)
         audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
-        # Download thumbnail
-        thumb_url = yt.thumbnail_url
-        response = requests.get(thumb_url)
-        thumb_path = folder_path / "thumbnail.jpg"
-        with open(thumb_path, 'wb') as thumb_file:
-            thumb_file.write(response.content)
-
-        # Embed album art
-        embed_album_art_ffmpeg(output_path, thumb_path)
-
         # Clean up and log success
         os.remove(temp_file)
-        os.remove(thumb_path)
-
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
