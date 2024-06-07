@@ -96,7 +96,7 @@ def download_playlist_as_mp3s(playlist_url, output_folder):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <playlist_url>", file=sys.stderr)
+        print("Usage: python playlist.py <playlist_url>", file=sys.stderr)
         sys.exit(1)
     playlist_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
