@@ -5,9 +5,9 @@ const router = express.Router();
 
  
 const isValidYouTubeUrl = (url) => {
-    const pattern = /^(https?:\/\/)?(www\.youtube\.com|youtu\.?be)\/(watch\?v=|shorts\/)?[a-zA-Z0-9_-]{11}$/;
+    const pattern = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
     return pattern.test(url);
-};
+  };
 
   const isValidPlaylistUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
