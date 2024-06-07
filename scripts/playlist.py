@@ -76,14 +76,14 @@ def download_playlist(playlist_url, output_folder):
             for file in downloaded_files:
                 zipf.write(folder_path / file, arcname=file)
 
-        return zip_filename.name  # Return the zip filename
+        return zip_filename  # Return the zip filename path
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <playlist_url>", file=sys.stderr)
+        print("Usage: python playlist.py <playlist_url>", file=sys.stderr)
         sys.exit(1)
     playlist_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
