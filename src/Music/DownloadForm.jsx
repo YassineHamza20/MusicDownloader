@@ -33,19 +33,20 @@ function MusicDownloader() {
                 link.click();
                 document.body.removeChild(link);
 
-                setMessage('Song downloaded successfully');
+                // setMessage('Song downloaded successfully');
+                setMessage('Thank you for converting');
                 setIsSuccess(true);
-                
+                // toast.success('Song downloaded successfully');
             } else {
                 setMessage(`Error: ${data.message}`);
                 setIsSuccess(false);
-                
+                // toast.error(`Error: ${data.message}`);
             }
         } else {
             const errorData = await response.json();
             setMessage(`Error: ${errorData.message}`);
             setIsSuccess(false);
-            toast.error(`Error: ${errorData.message}`);
+            // toast.error(`Error: ${errorData.message}`);
         }
     } catch (error) {
         console.error('Error:', error);
