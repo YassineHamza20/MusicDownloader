@@ -9,6 +9,7 @@ function PlaylistDownloader() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);  // New state to track response status
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -23,14 +24,13 @@ function PlaylistDownloader() {
         if (response.ok) {
             const data = await response.json();
             if (data.success) {
-                data.downloadUrls.forEach(downloadUrl => {
-                    const link = document.createElement('a');
-                    link.href = downloadUrl;
-                    link.setAttribute('download', ''); // Let the browser use the filename from the URL
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
+                const downloadUrl = data.downloadUrl;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', ''); // Let the browser use the filename from the URL
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
 
                 setMessage('Playlist downloaded successfully');
                 setIsSuccess(true);
