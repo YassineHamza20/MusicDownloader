@@ -23,7 +23,7 @@ function App() {
     
       <div style={{ marginBottom: '0px', textAlign: 'center' }}>
         <img src="/Melody.png" alt="MelodyAddictLogo" style={{ marginRight: '930px',width: '100px', animation: 'logo-spin infinite 10s linear' }} />
-        <h3 style={{  marginTop: '-50px',color: 'white' }}>Fastest High Quality Music Downloader (320kbps)</h3>
+        <h3 style={{  marginTop: '-80px',color: 'white' }}>Fastest High Quality Music Downloader (320kbps)</h3>
       </div>
     <div style={{ marginBottom: '60px', textAlign: 'center' }}>
     <button onClick={toggleComponentView} style={{
