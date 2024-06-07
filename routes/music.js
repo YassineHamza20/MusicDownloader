@@ -59,7 +59,6 @@ const isValidYouTubeUrl = (url) => {
     }
 });
 
-
 router.post('/playlist', async (req, res) => {
   const { youtube_url } = req.body;
 
@@ -105,9 +104,6 @@ router.post('/playlist', async (req, res) => {
       res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
   }
 });
-
-
-
 
   router.post('/video', async (req, res) => {
     const { youtube_url } = req.body;
