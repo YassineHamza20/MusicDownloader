@@ -34,11 +34,11 @@ function VideoDownloader() {
 
                 setMessage('video downloaded successfully');
                 setIsSuccess(true);
-                toast.success('video downloaded successfully');
+               
             } else {
                 setMessage(`Error: ${data.message}`);
                 setIsSuccess(false);
-                toast.error(`Error: ${data.message}`);
+               
             }
         } else {
             const errorData = await response.json();

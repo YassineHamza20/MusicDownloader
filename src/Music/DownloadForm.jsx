@@ -35,11 +35,11 @@ function MusicDownloader() {
 
                 setMessage('Song downloaded successfully');
                 setIsSuccess(true);
-                toast.success('Song downloaded successfully');
+                
             } else {
                 setMessage(`Error: ${data.message}`);
                 setIsSuccess(false);
-                toast.error(`Error: ${data.message}`);
+                
             }
         } else {
             const errorData = await response.json();
