@@ -7,6 +7,7 @@ import re
 from pytube import Playlist, YouTube
 from pydub import AudioSegment
 import traceback
+import zipfile
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -61,12 +62,21 @@ def download_video_as_mp3(youtube_url, output_folder):
 def download_playlist(playlist_url, output_folder):
     try:
         pl = Playlist(playlist_url)
+        folder_path = Path(output_folder) / sanitize_filename(pl.title)
+        folder_path.mkdir(parents=True, exist_ok=True)
         downloaded_files = []
         for video_url in pl.video_urls:
-            result = download_video_as_mp3(video_url, output_folder)
+            result = download_video_as_mp3(video_url, folder_path)
             if result:
                 downloaded_files.append(result)
-        return downloaded_files
+        
+        # Zip the folder
+        zip_filename = folder_path.with_suffix('.zip')
+        with zipfile.ZipFile(zip_filename, 'w') as zipf:
+            for file in downloaded_files:
+                zipf.write(folder_path / file, arcname=file)
+
+        return zip_filename.name  # Return the zip filename
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None
@@ -79,7 +89,7 @@ if __name__ == "__main__":
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
     result = download_playlist(playlist_url, output_folder)
     if result:
-        print("\n".join(result))
+        print(result)
         sys.exit(0)
     else:
         sys.exit(1)
