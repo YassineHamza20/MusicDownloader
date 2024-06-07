@@ -19,11 +19,12 @@ app.use(cors(corsOptions));
 //         res.setHeader('Content-Disposition', `attachment; filename="${path.split('/').pop()}"`);
 //     }
 // }));
-app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, path) => {
-      res.setHeader('Content-Disposition', 'attachment');
-  }
-}));
+// app.use('/downloads', express.static(path.join(__dirname, 'public'), {
+//   setHeaders: (res, path) => {
+//       res.setHeader('Content-Disposition', 'attachment');
+//   }
+// }));
+app.use('/downloads', express.static(path.join(__dirname, 'public')));
 // Apply the router
 app.use("/", require("./routes/music"));
 
