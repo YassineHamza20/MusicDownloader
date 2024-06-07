@@ -34,7 +34,7 @@ function MusicDownloader() {
                 document.body.removeChild(link);
 
                 // setMessage('Song downloaded successfully');
-                setMessage('Thank you for converting');
+                setMessage('Done !');
                 setIsSuccess(true);
                 // toast.success('Song downloaded successfully');
             } else {
