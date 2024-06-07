@@ -12,7 +12,6 @@ function PlaylistDownloader() {
   
 
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -58,9 +57,6 @@ function PlaylistDownloader() {
         setLoading(false);
     }
 };
-
-
-
 
   return (
     <>
