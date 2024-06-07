@@ -4,7 +4,7 @@ import os
 import subprocess
 from pathlib import Path
 import re
-from pytube import Playlist, YouTube
+from pytube import YouTube, Playlist
 from pydub import AudioSegment
 import traceback
 import zipfile
@@ -52,42 +52,55 @@ def download_video_as_mp3(youtube_url, output_folder):
         audio_segment = AudioSegment.from_file(temp_file)
         audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
+        # Download thumbnail
+        thumb_url = yt.thumbnail_url
+        response = requests.get(thumb_url)
+        thumb_path = folder_path / "thumbnail.jpg"
+        with open(thumb_path, 'wb') as thumb_file:
+            thumb_file.write(response.content)
+
+        # Embed album art
+        embed_album_art_ffmpeg(output_path, thumb_path)
+
         # Clean up and log success
         os.remove(temp_file)
+        os.remove(thumb_path)
+
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
 
-def download_playlist(playlist_url, output_folder):
+def download_playlist_as_mp3s(playlist_url, output_folder):
     try:
-        pl = Playlist(playlist_url)
-        folder_path = Path(output_folder) / sanitize_filename(pl.title)
-        folder_path.mkdir(parents=True, exist_ok=True)
+        playlist = Playlist(playlist_url)
+        print(f"Starting download of playlist: {playlist.title}")
         downloaded_files = []
-        for video_url in pl.video_urls:
-            result = download_video_as_mp3(video_url, folder_path)
-            if result:
-                downloaded_files.append(result)
+        for video_url in playlist.video_urls:
+            print(f"Downloading {video_url}")
+            filename = download_video_as_mp3(video_url, output_folder)
+            if filename:
+                downloaded_files.append(filename)
         
-        # Zip the folder
-        zip_filename = folder_path.with_suffix('.zip')
-        with zipfile.ZipFile(zip_filename, 'w') as zipf:
+        # Create a ZIP file containing all downloaded MP3s
+        zip_filename = f"{sanitize_filename(playlist.title)}.zip"
+        zip_filepath = Path(output_folder) / zip_filename
+        with zipfile.ZipFile(zip_filepath, 'w') as zipf:
             for file in downloaded_files:
-                zipf.write(folder_path / file, arcname=file)
-
-        return zip_filename  # Return the zip filename path
+                zipf.write(Path(output_folder) / file, file)
+        
+        return zip_filename
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python playlist.py <playlist_url>", file=sys.stderr)
+        print("Usage: python your_script.py <playlist_url>", file=sys.stderr)
         sys.exit(1)
     playlist_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-    result = download_playlist(playlist_url, output_folder)
+    result = download_playlist_as_mp3s(playlist_url, output_folder)
     if result:
         print(result)
         sys.exit(0)

@@ -89,14 +89,8 @@ router.post('/playlist', async (req, res) => {
           if (code === 0) {
               const lines = output.split('\n');
               const lastLine = lines[lines.length - 1].trim();
-              const filePath = path.join(__dirname, '..', 'public', lastLine);
-              const fileName = path.basename(filePath);
-
-              res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
-              res.setHeader('Content-Type', mime.getType(filePath));
-
-              const fileStream = fs.createReadStream(filePath);
-              fileStream.pipe(res);
+              const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodeURIComponent(lastLine)}`;
+              res.status(200).json({ success: true, message: 'Playlist downloaded successfully', downloadUrl });
           } else {
               console.error('Python script error:', scriptError);
               res.status(500).json({
