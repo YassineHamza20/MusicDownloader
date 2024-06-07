@@ -34,15 +34,21 @@ def embed_album_art_ffmpeg(video_path, image_path):
 
     os.replace(output_path, video_path)
 
+
+
 def download_video_as_mp4(youtube_url, output_folder):
     try:
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
-        video = yt.streams.filter(file_extension='mp4').get_highest_resolution()
+
+        # Enhanced video stream selection to prioritize 60fps and highest resolution
+        video_streams = yt.streams.filter(file_extension='mp4', progressive=True)
+        video = video_streams.order_by('resolution').order_by('fps').desc().first()
+        
         output_path = folder_path / f"{title}.mp4"
-        video.download(output_path=folder_path, filename=f"{title}.mp4")
+        video.download(output_path=folder_path)
 
         # Download thumbnail
         thumb_url = yt.thumbnail_url
