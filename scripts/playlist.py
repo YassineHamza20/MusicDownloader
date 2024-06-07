@@ -5,21 +5,22 @@ import requests
 import os
 from pathlib import Path
 import subprocess
-import re
 from urllib.parse import parse_qs, urlparse
-import traceback
 
 # Set paths to ffmpeg and ffprobe
-ffmpeg_path = 'ffmpeg'
-ffprobe_path = 'ffprobe'
+ffmpeg_path = r"C:\ffmpeg\bin\ffmpeg.exe"
+ffprobe_path = r"C:\ffmpeg\bin\ffprobe.exe"
+os.environ["PATH"] += os.pathsep + r'C:\ffmpeg\bin'
 
-# Configure pydub to use the ffmpeg installed on the system
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
     """Sanitize filename by removing or replacing invalid characters."""
-    return re.sub(r'[<>:"/\\|?*]+', '_', filename)
+    invalid_chars = '<>:"/\\|?*'
+    for char in invalid_chars:
+        filename = filename.replace(char, '_')
+    return filename
 
 def validate_playlist_url(url):
     """Validates the playlist URL and extracts the playlist ID."""
@@ -45,18 +46,10 @@ def embed_album_art_ffmpeg(audio_path, image_path):
         '-metadata:s:v', 'comment="Cover (front)"',
         str(output_path)
     ]
-    try:
-        result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.stderr:
-            print("FFmpeg stderr:", result.stderr.decode())
-    except subprocess.CalledProcessError as e:
-        print("FFmpeg command failed with error:", e.stderr.decode())
-        raise e
-
-    os.replace(output_path, audio_path)
+    subprocess.run(cmd, check=True)
+    os.replace(output_path, audio_path)  # Replace original file with the new one
 
 def download_video_as_mp3(youtube_url, output_folder):
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
     try:
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
@@ -79,18 +72,14 @@ def download_video_as_mp3(youtube_url, output_folder):
 
         embed_album_art_ffmpeg(output_path, thumb_path)
 
-        print(output_path.name)  # Print the filename to stdout for Node.js to capture
+        print(f"Downloaded and converted to MP3: {output_path}")
 
         os.remove(temp_file)
         os.remove(thumb_path)
-
-        return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
-        traceback.print_exc(file=sys.stderr)
-        return None  # Return None in case of error
+        print(f"Error processing {youtube_url}: {e}")
 
-def download_playlist(playlist_url):
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
+def download_playlist(playlist_url, output_folder):
     try:
         playlist_id = validate_playlist_url(playlist_url)
         playlist = Playlist(f"https://www.youtube.com/playlist?list={playlist_id}")
@@ -99,16 +88,13 @@ def download_playlist(playlist_url):
             print(f"Downloading {video_url}")
             download_video_as_mp3(video_url, output_folder)
     except Exception as e:
-        traceback.print_exc(file=sys.stderr)
+        print(f"Error processing playlist {playlist_url}: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <playlist_url>", file=sys.stderr)
+        print("Usage: python your_script.py <playlist_url>")
         sys.exit(1)
     playlist_url = sys.argv[1]
-    result = download_playlist(playlist_url)
-    if result:
-        print(result)
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    output_folder = Path.home() / 'Downloads' / 'PlaylistMp3'
+    download_playlist(playlist_url, output_folder)
+    
