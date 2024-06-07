@@ -62,7 +62,6 @@ const isValidYouTubeUrl = (url) => {
 
 
 
-
 router.post('/playlist', async (req, res) => {
   const { youtube_url } = req.body;
 
@@ -90,10 +89,9 @@ router.post('/playlist', async (req, res) => {
       process.on('close', (code) => {
           console.log(`Process exited with code ${code}`);
           if (code === 0) {
-              const lines = output.split('\n');
-              const lastLine = lines[lines.length - 1].trim();
-              const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodeURIComponent(lastLine)}`;
-              res.status(200).json({ success: true, message: 'Playlist downloaded successfully', downloadUrl });
+              const lines = output.split('\n').map(line => line.trim());
+              const downloadUrls = lines.map(line => `${req.protocol}://${req.get('host')}/downloads/${encodeURIComponent(line)}`);
+              res.status(200).json({ success: true, message: 'Playlist downloaded successfully', downloadUrls });
           } else {
               console.error('Python script error:', scriptError);
               res.status(500).json({
@@ -108,6 +106,7 @@ router.post('/playlist', async (req, res) => {
       res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
   }
 });
+
 
   router.post('/video', async (req, res) => {
     const { youtube_url } = req.body;
