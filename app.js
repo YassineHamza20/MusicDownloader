@@ -6,7 +6,7 @@ app.use(express.json());
 
 // CORS options to allow specific origins
 const corsOptions = {
-    origin: ['https://melodyaddicts.netlify.app', 'https://musicdownloader1.onrender.com','https://front--melodyaddicts.netlify.app'],
+    origin: ['https://melodyaddicts.netlify.app', 'https://musicdownloader1.onrender.com'],
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
