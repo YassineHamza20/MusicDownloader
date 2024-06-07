@@ -9,6 +9,10 @@ function PlaylistDownloader() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);  // New state to track response status
 
+  
+
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -21,18 +25,24 @@ function PlaylistDownloader() {
         });
 
         if (response.ok) {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'playlist.zip'); // Set a default filename
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const data = await response.json();
+            if (data.success) {
+                const downloadUrl = data.downloadUrl;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', ''); // Let the browser use the filename from the URL
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
 
-            setMessage('Playlist downloaded successfully');
-            setIsSuccess(true);
-            toast.success('Playlist downloaded successfully');
+                setMessage('Playlist downloaded successfully');
+                setIsSuccess(true);
+                toast.success('Playlist downloaded successfully');
+            } else {
+                setMessage(`Error: ${data.message}`);
+                setIsSuccess(false);
+                toast.error(`Error: ${data.message}`);
+            }
         } else {
             const errorData = await response.json();
             setMessage(`Error: ${errorData.message}`);
@@ -48,6 +58,9 @@ function PlaylistDownloader() {
         setLoading(false);
     }
 };
+
+
+
 
   return (
     <>
