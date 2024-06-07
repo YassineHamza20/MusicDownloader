@@ -16,7 +16,7 @@ app.use(cors(corsOptions));
 // Serve static files from the 'public' directory
 app.use('/downloads', express.static(path.join(__dirname, 'public'), {
   setHeaders: (res, path) => {
-      res.setHeader('Content-Disposition', 'attachment; filename="' + path.split('/').pop() + '"');
+      res.setHeader('Content-Disposition', `attachment; filename="${path.split('/').pop()}"`);
   }
 }));
 // Apply the router
