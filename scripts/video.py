@@ -15,6 +15,24 @@ def sanitize_filename(filename):
     """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
 
+def enhance_video_ffmpeg(input_path, output_path):
+    """Enhance video quality using FFmpeg."""
+    cmd = [
+        ffmpeg_path, '-i', str(input_path),
+        '-vf', 'scale=1920:1080:flags=lanczos',  # Enhance resolution to 1080p using Lanczos filter
+        '-c:v', 'libx264', '-crf', '18',  # Use H.264 codec with constant rate factor
+        '-preset', 'slow',  # Use slower preset for better compression
+        '-c:a', 'aac', '-b:a', '192k',  # Use AAC codec for audio with 192kbps bitrate
+        str(output_path)
+    ]
+    try:
+        result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.stderr:
+            print("FFmpeg stderr:", result.stderr.decode())
+    except subprocess.CalledProcessError as e:
+        print("FFmpeg command failed with error:", e.stderr.decode())
+        raise e
+
 def embed_album_art_ffmpeg(video_path, image_path):
     """Embeds album art into an MP4 file using FFmpeg."""
     output_path = video_path.with_suffix('.temp.mp4')
@@ -40,14 +58,13 @@ def download_video_as_mp4(youtube_url, output_folder):
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
-
-        # Attempt to download the highest resolution video
-        video = yt.streams.filter(file_extension='mp4', progressive=False).order_by('resolution').desc().first()
-        if not video:
-            video = yt.streams.filter(file_extension='mp4').get_highest_resolution()
-        
+        video = yt.streams.filter(file_extension='mp4').get_highest_resolution()
+        temp_output_path = folder_path / f"{title}_temp.mp4"
         output_path = folder_path / f"{title}.mp4"
-        video.download(output_path=folder_path, filename=f"{title}.mp4")
+        video.download(output_path=folder_path, filename=f"{title}_temp.mp4")
+
+        # Enhance video quality
+        enhance_video_ffmpeg(temp_output_path, output_path)
 
         # Download thumbnail
         thumb_url = yt.thumbnail_url
@@ -61,10 +78,11 @@ def download_video_as_mp4(youtube_url, output_folder):
 
         # Clean up and log success
         os.remove(thumb_path)
+        os.remove(temp_output_path)
 
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
-        print(e, file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
 
 if __name__ == "__main__":
