@@ -20,13 +20,15 @@ function App() {
   return (
     <>
       <div style={{ textAlign: 'center' }}>
-        <img src="/Melody.png" alt="MelodyAddict Logo" style={{ marginRight: '930px', width: '100px', animation: 'logo-spin infinite 10s linear' }} />
+      <div className="logo-container"> {/* Container for centering the logo */}
+      <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
+    </div>
         <h3 style={{ marginTop: '-100px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
       </div>
       <div style={{ marginBottom: '60px', textAlign: 'center' }}>
         <button onClick={toggleComponentView} style={{
           backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
-        }}>Toggle MP4/MP3</button>
+        }}>MP4/MP3</button>
       </div>
       <BrowserRouter>
         <Routes>

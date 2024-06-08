@@ -101,3 +101,41 @@ p{
 .cube__face--back {
   transform: rotateY(180deg) translateZ(150px); /* Rotate and pull forward to match front */
 }
+
+
+ /* Container styling for centering */
+.logo-container {
+  display: flex;
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically if needed */
+  width: 20%; /* Full width of the container */
+}
+
+.melody-logo {
+  width: 120px; /* Fixed width */
+  animation: logo-spin infinite 10s linear;
+}
+
+/* Keyframes for the logo spin animation */
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .melody-logo {
+    width: 80px; /* Smaller width on mobile devices */
+  }
+}
+
+/* Further responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .melody-logo {
+    width: 60px; /* Even smaller width for very small devices */
+  }
+}
