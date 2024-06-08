@@ -51,7 +51,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-      <div style={{ marginTop: '35px', textAlign: 'center' }}>
+      <div style={{ marginTop: '-20px', textAlign: 'center' }}>
         <button onClick={togglePopup} style={{
           backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
         }}>About Me</button>
