@@ -23,7 +23,7 @@ function App() {
       <div className="logo-container"> {/* Container for centering the logo */}
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
-        <h3 style={{ marginTop: '-80px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
+        <h3 style={{ marginTop: '10px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
       </div>
       <div style={{ marginBottom: '30px', textAlign: 'center' }}>
         <button onClick={toggleComponentView} style={{

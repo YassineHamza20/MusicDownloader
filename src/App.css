@@ -112,7 +112,7 @@ p{
 }
 
 .melody-logo {
-  width: 120px; /* Fixed width */
+  width: 100px; /* Fixed width */
   animation: logo-spin infinite 10s linear;
 }
 
