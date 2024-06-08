@@ -73,14 +73,14 @@ function MusicDownloader() {
             <input 
               type="text" 
               value={youtubeUrl} 
-              placeholder="Paste YouTube video link here"
+              placeholder="Paste link here"
               onChange={(event) => setYoutubeUrl(event.target.value)}
               className="text-input"
             />
           </label>
           <button type="submit" className="download-button" disabled={loading}>Download Song</button>
         </form>
-        {loading && <p className="loading">Downloading...</p>}
+        {loading && <p className="loading">Gettin File Ready...</p>}
        
 
         {message && !loading && <p className={`message ${isSuccess ? 'success' : 'error'}`}>{message}</p>}
