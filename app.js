@@ -43,7 +43,7 @@ app.get('/heartbeat', (req, res) => {
   res.status(200).send('Server is awake!');
 });
 function keepServerAwake() {
-  const url = "https://musicdownloader1.onrender.com"; // Change to your actual server URL
+  const url = "https://musicdownloader1.onrender.com/heartbeat"; // Change to your actual server URL
   fetch(url).then(response => response.text()).then(console.log).catch(console.error);
 
   // Set timeout for next ping
