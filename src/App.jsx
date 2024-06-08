@@ -28,7 +28,7 @@ function App() {
       <div className="logo-container"> {/* Container for centering the logo */}
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
-        <h3 style={{ marginTop: '15px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
+        <h3 style={{ marginTop: '5px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
       </div>
       <div style={{ marginBottom: '0px', textAlign: 'center' }}>
         <button onClick={toggleMediaView} style={{
@@ -54,13 +54,14 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-      <div style={{ marginTop: '-20px', textAlign: 'center' }}>
+       <p className="text-emboss">If you like Music, please share it! <ShareButton /></p>
+      <div style={{ marginTop: '-10px', textAlign: 'center' }}>
         <button onClick={togglePopup} style={{
           backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
         }}>About Me</button>
         {showPopup && <AboutMePopup />}
       </div>
-      <p className="text-emboss">If you like Music, please share it! <ShareButton /></p>
+     
       <ToastContainer />
     </>
   );
