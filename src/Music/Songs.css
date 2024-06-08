@@ -77,7 +77,7 @@ a:hover {
 }
 
 .message.success {
-  color: rgb(19, 215, 19);
+  color: rgb(0, 0, 0);
 }
 
 .message.error {

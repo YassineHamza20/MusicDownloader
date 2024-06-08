@@ -33,7 +33,7 @@ function VideoDownloader() {
                 document.body.removeChild(link);
 
                 // setMessage('video downloaded successfully');
-                  setMessage('Click 3 Dots On the Next Page To Download');
+                  setMessage('Click The 3 Dots On the Next Page To Download');
                 setIsSuccess(true);
                 // toast.success('video downloaded successfully');
             } else {

@@ -34,7 +34,7 @@ function MusicDownloader() {
                 document.body.removeChild(link);
 
                 // setMessage('Song downloaded successfully');
-                setMessage('Click 3 Dots On the Next Page To Download');
+                setMessage('Click The 3 Dots On the Next Page To Download');
                 setIsSuccess(true);
                 // toast.success('Song downloaded successfully');
             } else {
