@@ -50,7 +50,7 @@ def download_video_as_mp4(youtube_url, output_folder):
         video.download(output_path=folder_path, filename=f"{title}.mp4")
 
         # Download thumbnail
-        thumb_url = yt.thumbnail_error
+        thumb_url = yt.thumbnail_url
         response = requests.get(thumb_url)
         thumb_path = folder_path / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
