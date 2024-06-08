@@ -13,7 +13,12 @@ import './App.css';
 function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [viewMP4, setViewMP4] = useState(false);
 
+  // Function to toggle between MP3 and MP4
+  const toggleMediaView = () => {
+    setViewMP4(!viewMP4);
+  };
   const togglePopup = () => setShowPopup(!showPopup);
   const toggleComponentView = () => setIsFlipped(!isFlipped);
 
@@ -26,24 +31,22 @@ function App() {
         <h3 style={{ marginTop: '15px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
       </div>
       <div style={{ marginBottom: '0px', textAlign: 'center' }}>
-        <button onClick={toggleComponentView} style={{
+        <button onClick={toggleMediaView} style={{
           backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '17px'
-        }}>MP4/MP3</button>
+        }}>
+          {viewMP4 ? "Change to Mp3" : "Change to Mp4"}   
+        </button>
       </div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={
             <div style={{ position: 'relative', height: '390px', width: '100%' }}>
-              <div className={`cube ${isFlipped ? 'is-flipped' : ''}`}>
+              <div className={`cube ${viewMP4 ? 'is-flipped' : ''}`}>
                 <div className="cube__face cube__face--front">
-                
-                  <MusicDownloader />
-                  {/* <PlaylistDownloader /> */}
+                  <MusicDownloader />   
                 </div>
                 <div className="cube__face cube__face--back">
-                 
-                  <VideoDownloader />
-                  {/* <PlaylistDownloaderVideo /> */}
+                  <VideoDownloader />  
                 </div>
               </div>
             </div>
