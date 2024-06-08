@@ -28,32 +28,41 @@ function App() {
       <div className="logo-container"> {/* Container for centering the logo */}
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
-        <h3 style={{ marginTop: '5px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
+        <h3 style={{ marginTop: '5px', color: 'white' }}>High Quality Music Downloader (320kbps) </h3> 
       </div>
+    
       <div style={{ marginBottom: '0px', textAlign: 'center' }}>
         <button onClick={toggleMediaView} style={{
           backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '17px'
         }}>
-          {viewMP4 ? "Change to Mp3" : "Change to Mp4"}   
+          
+          {viewMP4 ? "Change To Mp3" : "Change To Mp4"}   
         </button>
       </div>
+      <h2>{viewMP4 ? "Mp4" : "Mp3"} </h2> 
       <BrowserRouter>
         <Routes>
           <Route path="/" element={
+            
             <div style={{ position: 'relative', height: '390px', width: '100%' }}>
               <div className={`cube ${viewMP4 ? 'is-flipped' : ''}`}>
+                
                 <div className="cube__face cube__face--front">
                   <MusicDownloader />   
                 </div>
+               
                 <div className="cube__face cube__face--back">
                   <VideoDownloader />  
                 </div>
+                
               </div>
             </div>
           } />
           <Route path="*" element={<NotFound />} />
         </Routes>
+      
       </BrowserRouter>
+     
        <p className="text-emboss">If you like Music, please share it! <ShareButton /></p>
       <div style={{ marginTop: '-10px', textAlign: 'center' }}>
         <button onClick={togglePopup} style={{
