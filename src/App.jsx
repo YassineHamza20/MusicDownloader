@@ -31,7 +31,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={
-            <div style={{ position: 'relative', height: '300px', width: '91%' }}>
+            <div style={{ position: 'relative', height: '400px', width: '91%' }}>
               <div className={`cube ${isFlipped ? 'is-flipped' : ''}`}>
                 <div className="cube__face cube__face--front">
                   <PlaylistDownloader />
