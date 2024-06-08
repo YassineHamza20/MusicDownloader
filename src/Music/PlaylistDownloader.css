@@ -51,7 +51,7 @@ h1 {
 }
 
 .message.success {
-  color: #075a07;
+  color: #00ff00;
 }
 
 .download-button::after {

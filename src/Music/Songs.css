@@ -22,7 +22,7 @@ h1, a {
 }
 
 a:hover {
-  color: #08fc62; /* Bright color to highlight the link */
+  color: #21ff72; /* Bright color to highlight the link */
 }
 
 .music-downloader-container, .playlist-downloader-container {
@@ -77,7 +77,7 @@ a:hover {
 }
 
 .message.success {
-  color: rgb(10, 228, 10);
+  color: rgb(0, 255, 0);
 }
 
 .message.error {
