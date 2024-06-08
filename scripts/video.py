@@ -19,10 +19,10 @@ def enhance_video_ffmpeg(input_path, output_path):
     """Enhance video quality using FFmpeg."""
     cmd = [
         ffmpeg_path, '-i', str(input_path),
-        '-vf', 'scale=1280:720:flags=lanczos',  # Scale down to 720p using Lanczos filter
-        '-c:v', 'libx264', '-crf', '23',  # Use H.264 codec with a higher CRF (lower quality but less resource-intensive)
-        '-preset', 'faster',  # Use faster preset for lower resource usage
-        '-c:a', 'aac', '-b:a', '128k',  # Use AAC codec for audio with 128kbps bitrate
+        '-vf', 'scale=1920:1080:flags=lanczos',  # Enhance resolution to 1080p using Lanczos filter
+        '-c:v', 'libx264', '-crf', '18',  # Use H.264 codec with constant rate factor
+        '-preset', 'slow',  # Use slower preset for better compression
+        '-c:a', 'aac', '-b:a', '192k',  # Use AAC codec for audio with 192kbps bitrate
         str(output_path)
     ]
     try:
