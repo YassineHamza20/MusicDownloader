@@ -71,13 +71,13 @@ a:hover {
 }
 
 .loading, .message {
-  color: #0066cc; /* Consistent color for loading messages */
+  color: #000000; /* Consistent color for loading messages */
   font-style: italic;
   font-weight: bold;
 }
 
 .message.success {
-  color: green;
+  color: rgb(10, 228, 10);
 }
 
 .message.error {
