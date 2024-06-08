@@ -23,17 +23,17 @@ function App() {
       <div className="logo-container"> {/* Container for centering the logo */}
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
-        <h3 style={{ marginTop: '10px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
+        <h3 style={{ marginTop: '15px', color: 'white' }}>Fastest High-Quality Music Downloader (320kbps)</h3>
       </div>
-      <div style={{ marginBottom: '30px', textAlign: 'center' }}>
+      <div style={{ marginBottom: '0px', textAlign: 'center' }}>
         <button onClick={toggleComponentView} style={{
-          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '16px'
+          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '17px'
         }}>MP4/MP3</button>
       </div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={
-            <div style={{ position: 'relative', height: '400px', width: '91%' }}>
+            <div style={{ position: 'relative', height: '390px', width: '100%' }}>
               <div className={`cube ${isFlipped ? 'is-flipped' : ''}`}>
                 <div className="cube__face cube__face--front">
                 
