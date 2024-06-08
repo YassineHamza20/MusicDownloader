@@ -40,12 +40,17 @@ def download_video_as_mp4(youtube_url, output_folder):
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
-        video = yt.streams.filter(file_extension='mp4').get_highest_resolution()
+
+        # Attempt to download the highest resolution video
+        video = yt.streams.filter(file_extension='mp4', progressive=False).order_by('resolution').desc().first()
+        if not video:
+            video = yt.streams.filter(file_extension='mp4').get_highest_resolution()
+        
         output_path = folder_path / f"{title}.mp4"
         video.download(output_path=folder_path, filename=f"{title}.mp4")
 
         # Download thumbnail
-        thumb_url = yt.thumbnail_url
+        thumb_url = yt.thumbnail_error
         response = requests.get(thumb_url)
         thumb_path = folder_path / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
@@ -59,7 +64,7 @@ def download_video_as_mp4(youtube_url, output_folder):
 
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
-        traceback.print_exc(file=sys.stderr)
+        print(e, file=sys.stderr)
         return None  # Return None in case of error
 
 if __name__ == "__main__":
