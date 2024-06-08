@@ -36,12 +36,14 @@ function App() {
             <div style={{ position: 'relative', height: '400px', width: '91%' }}>
               <div className={`cube ${isFlipped ? 'is-flipped' : ''}`}>
                 <div className="cube__face cube__face--front">
-                  <PlaylistDownloader />
+                
                   <MusicDownloader />
+                  {/* <PlaylistDownloader /> */}
                 </div>
                 <div className="cube__face cube__face--back">
-                  <PlaylistDownloaderVideo />
+                 
                   <VideoDownloader />
+                  {/* <PlaylistDownloaderVideo /> */}
                 </div>
               </div>
             </div>

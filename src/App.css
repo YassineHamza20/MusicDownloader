@@ -65,22 +65,22 @@ p{
   margin: 0 auto; /* Centering the scene horizontally */
   position: relative;
 }
- 
 .cube {
   width: 100%;
   height: 100%;
-  position: absolute; /* Positioned relative to its parent */
-  transform-style: preserve-3d; /* Children exist in 3D space */
-  transition: transform 1s; /* Smooth transition for the flip */
+  position: relative; /* Changed from absolute to relative for better control */
+  transform-style: preserve-3d;
+  transition: transform 1s;
 }
 
 .cube.is-flipped {
-  transform: rotateY(180deg); /* Flip to show the back face */
+  transform: rotateY(180deg); /* Default flip for desktop */
 }
- 
+
+/* Adjust the cube's flip axis on mobile devices */
 @media (max-width: 768px) {
-  .cube {
-    transform: scale(0.8); /* Scale down the cube on smaller screens */
+  .cube.is-flipped {
+    transform: rotateX(180deg); /* Flip top to bottom on mobile */
   }
 }
 
@@ -89,17 +89,23 @@ p{
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-  backface-visibility: hidden; /* Hide the back of the face */
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
 }
 
 .cube__face--front {
-  transform: rotateY(0deg) translateZ(150px); /* Adjust based on half the depth */
+  transform: translateZ(150px); /* Positioned forward */
 }
 
 .cube__face--back {
-  transform: rotateY(180deg) translateZ(150px); /* Rotate and pull forward to match front */
+  transform: rotateY(180deg) translateZ(150px); /* Positioned forward when flipped */
+}
+
+@media (max-width: 768px) {
+  .cube__face--back {
+    transform: rotateX(180deg) translateZ(150px); /* Rotate on X-axis for mobile */
+  }
 }
 
 
