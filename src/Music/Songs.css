@@ -1,6 +1,6 @@
 .music-downloader-container {
   max-width: 600px;
-  padding: 30px; /* Reduced from 200px for practical padding */
+  padding: 30px; /* Adjusted padding */
   border: 3px solid #000000;
   border-radius: 20px;
   background-color: #f9f9f9;
@@ -26,7 +26,7 @@ a:hover {
 }
 
 .music-downloader-container, .playlist-downloader-container {
-  flex: 1; /* Take equal width */
+  flex: 1; /* Ensure equal width */
   padding: 20px;
 }
 
@@ -81,9 +81,10 @@ a:hover {
 }
 
 .message.error {
-  colors: red;
+  color: red;
 }
 
+@keybuilder animation for loading spinner */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -102,20 +103,20 @@ a:hover {
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   .music-downloader-container, .playlist-downloader-container {
-    max-width: 100%; /* Take full width */
-    padding: 15px; /* Reduced padding */
-    border-radius: 10px; /* Softer corners for a touch-friendly interface */
+    max-width: 100%; /* Full width */
+    padding: 15px; /* Adjust padding */
+    border-radius: 10px; /* Smoother corners */
   }
 
   .app-container {
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: column; /* Ensure vertical layout */
   }
 
   .text-input, .download-button {
-    border-radius: 10px; /* Softer edges */
+    border-radius: 10px; /* Smoother edges */
   }
 
   h1, .input-label, .message {
-    font-size: smaller; /* Smaller font size for space efficiency */
+    font-size: smaller; /* Smaller font size */
   }
 }
