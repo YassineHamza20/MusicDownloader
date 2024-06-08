@@ -33,7 +33,7 @@ function VideoDownloader() {
                 document.body.removeChild(link);
 
                 // setMessage('video downloaded successfully');
-                  setMessage('Done !');
+                  setMessage('click 3 dots on the other page to download');
                 setIsSuccess(true);
                 // toast.success('video downloaded successfully');
             } else {
@@ -77,7 +77,7 @@ function VideoDownloader() {
           </label>
           <button type="submit" className="download-button" disabled={loading}>Download Video</button>
         </form>
-        {loading && <p className="loading">Gettin File Ready...</p>}
+        {loading && <p className="loading">Getting File Ready...</p>}
        
 
         {message && !loading && <p className={`message ${isSuccess ? 'success' : 'error'}`}>{message}</p>}

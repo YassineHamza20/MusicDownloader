@@ -34,7 +34,7 @@ function MusicDownloader() {
                 document.body.removeChild(link);
 
                 // setMessage('Song downloaded successfully');
-                setMessage('Done !');
+                setMessage('click 3 dots on the other page to download');
                 setIsSuccess(true);
                 // toast.success('Song downloaded successfully');
             } else {
@@ -80,7 +80,7 @@ function MusicDownloader() {
           </label>
           <button type="submit" className="download-button" disabled={loading}>Download Song</button>
         </form>
-        {loading && <p className="loading">Gettin File Ready...</p>}
+        {loading && <p className="loading">Getting File Ready...</p>}
        
 
         {message && !loading && <p className={`message ${isSuccess ? 'success' : 'error'}`}>{message}</p>}
