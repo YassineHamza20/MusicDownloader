@@ -1,35 +1,33 @@
 .music-downloader-container {
   max-width: 600px;
-   
-  padding: 200px;
+  padding: 30px; /* Reduced from 200px for practical padding */
   border: 3px solid #000000;
   border-radius: 20px;
   background-color: #f9f9f9;
- 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
 .app-container {
   display: flex;
-  justify-content: center; /* Align items horizontally at the center */
-  align-items: start; /* Align items vertically at the start */
-  gap: 20px; /* Space between the components */
+  flex-direction: column; /* Stack elements vertically on smaller screens */
+  justify-content: center;
+  align-items: start;
+  gap: 20px;
+  padding: 20px; /* Padding around the entire app container */
 }
-h1 {
-  color: black; /* Set text color to black for h2 elements */
-}
-a {
+
+h1, a {
+  color: black;
   transition: color 0.3s ease-in-out;
 }
 
 a:hover {
-  color: #08fc62;  /* Bright color to highlight the link */
+  color: #08fc62; /* Bright color to highlight the link */
 }
 
 .music-downloader-container, .playlist-downloader-container {
-  flex: 1; /* Each child will take equal width */
-  padding: 30px;
-  border: 0px solid #ccc;
-  
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex: 1; /* Take equal width */
+  padding: 20px;
 }
 
 .downloader-form {
@@ -72,14 +70,10 @@ a:hover {
   cursor: not-allowed;
 }
 
-.loading {
-  color: #0066cc;
+.loading, .message {
+  color: #0066cc; /* Consistent color for loading messages */
   font-style: italic;
-}
-
-.message {
   font-weight: bold;
-  margin-top: 10px;
 }
 
 .message.success {
@@ -87,26 +81,41 @@ a:hover {
 }
 
 .message.error {
-  color: red;
+  colors: red;
 }
+
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .download-button::after {
   content: "";
-  display: inline-block;
-  margin-left: 10px;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  border-top-color: #3498db;
-  animation: spin 1s linear infinite;
-  visibility: hidden;
+  visibility: hidden; /* Hide spinner by default */
+  /* Spinner styles */
 }
 
 .download-button[disabled]::after {
-  visibility: visible; /* Only show spinner when the button is disabled */
+  visibility: visible; /* Show spinner when the button is disabled */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .music-downloader-container, .playlist-downloader-container {
+    max-width: 100%; /* Take full width */
+    padding: 15px; /* Reduced padding */
+    border-radius: 10px; /* Softer corners for a touch-friendly interface */
+  }
+
+  .app-container {
+    flex-direction: column; /* Stack elements vertically */
+  }
+
+  .text-input, .download-button {
+    border-radius: 10px; /* Softer edges */
+  }
+
+  h1, .input-label, .message {
+    font-size: smaller; /* Smaller font size for space efficiency */
+  }
 }

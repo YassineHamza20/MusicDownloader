@@ -7,7 +7,6 @@
 }
 
 @keyframes logo-spin {
-  
   from {
     transform: rotate(0deg);
   }
@@ -15,28 +14,30 @@
     transform: rotate(360deg);
   }
 }
-/* Add this at the top of your CSS file */
+
+/* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-/* src/index.css */
+/* Set body styles */
 body {
-  background-image: url('/Music.png');
+  background-color: black; /* Background set to plain black */
   background-size: cover;   /* Cover the entire page */
   background-position: center; /* Center the background image */
-  background-repeat: repeat; /* Do not repeat the image */
   height: 100vh; /* Full height */
   margin: 0; /* Remove default margin */
   color: white; /* Set text color to white */
-}
-.cube:hover {
-  transform:  rotateX(7deg);
+  font-family: 'Roboto', sans-serif; /* Consistent font styling */
 }
 
-/* Example for adjusting settings in landscape mode */
+.cube:hover {
+  transform: rotateX(7deg);
+}
+
+/* Adjust settings in landscape mode for small devices */
 @media (max-width: 768px) and (orientation: landscape) {
   body {
     background-size: contain;
-    min-height: 100vh;
+    min-height: 100vh; /* Ensure full vertical height */
   }
 }
 
@@ -48,38 +49,38 @@ a:hover {
   color: #0afbeb;  /* Bright color to highlight the link */
 }
 
-p{
-  color: rgb(255, 255, 255);
-  font-family: 'Open Sans', sans-serif; /* Example font-family */
-  font-size: small;
+p {
+  color: rgb(255, 255, 255); /* Ensures text color is white */
+  font-size: small; /* Adjust font size */
 }
-@media (max-width: 768px) {
-  body {
-    background-position: top center; /* Adjust as needed */
-  }
-}.scene {
+
+.scene {
   perspective: 1000px;  /* Depth effect for the 3D transform */
   width: 100%;  /* Full width to handle responsiveness */
   height: 300px; /* Fixed height to maintain cube appearance */
   margin: 0 auto; /* Centering the scene horizontally */
   position: relative;
 }
- 
+
 .cube {
   width: 100%;
   height: 100%;
-  position: absolute; /* Positioned relative to its parent */
-  transform-style: preserve-3d; /* Children exist in 3D space */
+  position: absolute;
+  transform-style: preserve-3d; /* Maintain 3D space for children */
   transition: transform 1s; /* Smooth transition for the flip */
 }
 
 .cube.is-flipped {
   transform: rotateY(180deg); /* Flip to show the back face */
 }
- 
+
 @media (max-width: 768px) {
   .cube {
     transform: scale(0.8); /* Scale down the cube on smaller screens */
+  }
+
+  .cube__face {
+    transform: translateZ(120px); /* Adjust the translation for smaller screens */
   }
 }
 
@@ -94,9 +95,21 @@ p{
 }
 
 .cube__face--front {
-  transform: rotateY(0deg) translateZ(150px); /* Adjust based on half the depth */
+  transform: rotateY(0deg) translateZ(150px); /* Position front face */
 }
 
 .cube__face--back {
-  transform: rotateY(180deg) translateZ(150px); /* Rotate and pull forward to match front */
+  transform: rotateY(180deg) translateZ(150px); /* Position back face */
+}
+
+@media (max-width: 768px) {
+  #root, .scene, .cube, .cube__face {
+    transform: scale(0.9); /* Slightly reduce scale to fit mobile screens */
+    max-width: 100%; /* Ensure elements do not exceed screen width */
+    padding: 10px; /* Reduce padding for smaller screens */
+  }
+
+  h1, p {
+    font-size: smaller; /* Adjust font size for readability */
+  }
 }

@@ -1,12 +1,9 @@
 .music-downloader-container {
   max-width: 400px;
   margin: 40px auto;
-   
   border: 0px solid #393d3d;
   border-radius: 55px; /* Smaller border-radius for a softer look */
   background: linear-gradient(to left, rgb(5, 39, 41) 0%, rgb(16, 82, 82) 20%, rgb(160, 190, 196) 80%);
-   
-   
 }
 
 h1 {
@@ -14,41 +11,29 @@ h1 {
   font-family: 'Open Sans', sans-serif; /* Consistent font family */
 }
 
-.downloader-form label {
+.downloader-form label, .downloader-form span {
   display: block;
   margin-bottom: 10px;
-}
-
-.downloader-form span {
-  display: block;
   font-family: 'Open Sans', sans-serif;
-  margin-bottom: 5px;
   font-weight: bold;
   color: #060606;
 }
 
-.downloader-form input[type="text"] {
+.downloader-form input[type="text"], .downloader-form button {
   width: 100%; /* Full width */
   padding: 10px;
-  font-family: 'Open Sans', sans-serif;
-  border-radius: 35px; /* Adjusted radius */
+  border-radius: 35px; /* Smoother border-radius */
   border: 1px solid #ccc;
   box-sizing: border-box; /* Include padding in width calculation */
+  cursor: pointer;
+  font-size: 16px; /* Readable font size */
 }
 
 .downloader-form button {
-  display: block;
-  width: 100%; /* Full width for mobile */
-  margin: 10px auto; /* Ensure margin is around the button */
-  padding: 8px;
-  border-radius: 25px; /* Adjusted radius */
   background-color: #081d48;
   color: white;
   border: none;
-  cursor: pointer;
-  font-size: 16px; /* Slightly larger font for better readability */
   transition: background-color 0.7s;
-  
 }
 
 .downloader-form button:hover {
@@ -60,13 +45,8 @@ h1 {
   cursor: not-allowed;
 }
 
-.loading {
-  color: #050b10;
+.loading, .message {
   font-style: italic;
-}
-
-.message {
-  color: #d00;
   font-weight: bold;
 }
 
@@ -74,40 +54,33 @@ h1 {
   color: #075a07;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 .download-button::after {
   content: "";
-  display: inline-block;
-  margin-left: 5px;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  border-top-color: #3498db;
-  animation: spin 1s linear infinite;
-  visibility: hidden;
+  visibility: hidden; /* Hide by default */
+  /* Spinner styles */
 }
 
 .download-button[disabled]::after {
-  visibility: visible; /* Only show spinner when the button is disabled */
+  visibility: visible; /* Show spinner when the button is disabled */
 }
 
-/* Media Queries for Mobile Devices */
+/* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   .music-downloader-container {
-    padding: 10px; /* Smaller padding on smaller screens */
-    border-radius: 15px; /* Softer border-radius */
-  }
-
-  .downloader-form input[type="text"], .downloader-form button {
-    border-radius: 20px; /* Softer border-radius */
+    max-width: 100%; /* Take full width on smaller screens */
+    padding: 20px; /* Increase padding */
+    border-radius: 30px; /* Smoother corners */
   }
 
   h1, .downloader-form span {
-    font-size: 14px; /* Smaller font size */
+    font-size: medium; /* Adjust font size */
+  }
+
+  .downloader-form input[type="text"], .downloader-form button {
+    border-radius: 20px; /* Softer border-radius for better touch */
+  }
+
+  .downloader-form label, .downloader-form span, .downloader-form input[type="text"], .downloader-form button {
+    margin-bottom: 15px; /* Increase spacing for better touch interaction */
   }
 }
