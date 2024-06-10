@@ -47,7 +47,9 @@ def download_video_as_mp3(youtube_url, output_folder):
         folder_path.mkdir(parents=True, exist_ok=True)
         video = yt.streams.get_audio_only()
         temp_file = video.download(output_path=folder_path)
-        output_path = folder_path / f"{title}.mp3"
+        #output_path = folder_path / f"{title}.mp3"
+        output_path = folder_path / (title + ".mp3")
+
         audio_segment = AudioSegment.from_file(temp_file)
         audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
