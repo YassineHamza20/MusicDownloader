@@ -3,7 +3,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const router = express.Router();
 
-app.get('/check', (req, res) => {
+router.get('/check', (req, res) => {
   const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'check_environment.py');
   try {
       const process = spawn('python', [pythonScriptPath]);
