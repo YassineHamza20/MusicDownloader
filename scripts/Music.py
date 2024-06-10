@@ -46,6 +46,7 @@ def download_video_as_mp3(youtube_url, output_folder, retries=5):
     user_agent = {'User-Agent': 'your bot 0.1'}
     for attempt in range(retries):
         try:
+            print(f"Attempt {attempt + 1} of {retries}", file=sys.stderr)
             print("Downloading video from URL:", youtube_url, file=sys.stderr)
             yt = YouTube(youtube_url)
             title = sanitize_filename(yt.title)
@@ -64,6 +65,13 @@ def download_video_as_mp3(youtube_url, output_folder, retries=5):
             thumb_url = yt.thumbnail_url
             print("Downloading thumbnail from URL:", thumb_url, file=sys.stderr)
             response = requests.get(thumb_url, headers=user_agent)
+            
+            if response.status_code == 429:
+                retry_after = int(response.headers.get("Retry-After", 60))  # Default to 60 seconds if not provided
+                print(f"HTTP 429 encountered. Retrying in {retry_after} seconds...", file=sys.stderr)
+                time.sleep(retry_after)
+                continue  # Retry the loop
+
             thumb_path = folder_path / "thumbnail.jpg"
             with open(thumb_path, 'wb') as thumb_file:
                 thumb_file.write(response.content)
@@ -91,6 +99,8 @@ def download_video_as_mp3(youtube_url, output_folder, retries=5):
             print("Error occurred:", e, file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
             return None
+    print("Max retries reached. Exiting.", file=sys.stderr)
+    return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
