@@ -49,7 +49,7 @@ app.get('/', (req, res) => {
 //   // Set timeout for next ping
 //   setTimeout(keepServerAwake, 14 * 60 * 1000 + 50 * 1000); // 14 minutes and 50 seconds
 // }
-router.get('/check-environment', (req, res) => {
+app.get('/check', (req, res) => {
     const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'check_environment.py');
     try {
         const process = spawn('python', [pythonScriptPath]);
