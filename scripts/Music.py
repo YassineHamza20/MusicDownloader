@@ -33,34 +33,41 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     try:
         result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.stderr:
-            print("FFmpeg stderr:", result.stderr.decode())
+            print("FFmpeg stderr:", result.stderr.decode(), file=sys.stderr)
     except subprocess.CalledProcessError as e:
-        print("FFmpeg command failed with error:", e.stderr.decode())
+        print("FFmpeg command failed with error:", e.stderr.decode(), file=sys.stderr)
         raise e
 
     os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
+        print("Downloading video from URL:", youtube_url, file=sys.stderr)
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
+        print("Video title:", title, file=sys.stderr)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
         video = yt.streams.get_audio_only()
+        print("Downloading audio stream...", file=sys.stderr)
         temp_file = video.download(output_path=folder_path)
+        print("Downloaded to temporary file:", temp_file, file=sys.stderr)
         output_path = folder_path / "{}.mp3".format(title)
         audio_segment = AudioSegment.from_file(temp_file)
         audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
         # Download thumbnail
         thumb_url = yt.thumbnail_url
+        print("Downloading thumbnail from URL:", thumb_url, file=sys.stderr)
         response = requests.get(thumb_url)
         thumb_path = folder_path / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
+        print("Thumbnail downloaded to:", thumb_path, file=sys.stderr)
 
         # Embed album art
         embed_album_art_ffmpeg(output_path, thumb_path)
+        print("Album art embedded into:", output_path, file=sys.stderr)
 
         # Clean up and log success
         os.remove(temp_file)
@@ -68,6 +75,7 @@ def download_video_as_mp3(youtube_url, output_folder):
 
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
+        print("Error occurred:", e, file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
 
@@ -77,6 +85,7 @@ if __name__ == "__main__":
         sys.exit(1)
     youtube_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
+    print("Output folder set to:", output_folder, file=sys.stderr)
     result = download_video_as_mp3(youtube_url, output_folder)
     if result:
         print(result)
