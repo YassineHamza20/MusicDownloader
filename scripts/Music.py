@@ -7,8 +7,6 @@ import re
 from pytube import YouTube
 from pydub import AudioSegment
 import traceback
-import time
-import urllib.error
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -41,32 +39,13 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
     os.replace(output_path, audio_path)
 
-def retry_request(func, *args, max_retries=5, initial_delay=1, backoff_factor=2, **kwargs):
-    """Retries a request with exponential backoff."""
-    delay = initial_delay
-    for attempt in range(max_retries):
-        try:
-            return func(*args, **kwargs)
-        except urllib.error.HTTPError as e:
-            if e.code == 429:
-                print(f"HTTP 429 Error: Too many requests. Retrying in {delay} seconds...")
-                time.sleep(delay)
-                delay *= backoff_factor
-            else:
-                raise e
-        except Exception as e:
-            print(f"Error: {e}. Retrying in {delay} seconds...")
-            time.sleep(delay)
-            delay *= backoff_factor
-    raise Exception("Failed to process the request after several attempts.")
-
 def download_video_as_mp3(youtube_url, output_folder):
     try:
-        yt = retry_request(YouTube, youtube_url)
+        yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
-        video = retry_request(yt.streams.get_audio_only)
+        video = yt.streams.get_audio_only()
         temp_file = video.download(output_path=folder_path)
         output_path = folder_path / f"{title}.mp3"
         audio_segment = AudioSegment.from_file(temp_file)
