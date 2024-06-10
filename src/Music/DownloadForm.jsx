@@ -16,7 +16,7 @@ function MusicDownloader() {
     setLoading(true);
 
     try {
-        const response = await fetch('https://musicdownloader1.onrender.com/music', {
+        const response = await fetch('https://songsdownloader.onrender.com/music', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ youtube_url: youtubeUrl })
