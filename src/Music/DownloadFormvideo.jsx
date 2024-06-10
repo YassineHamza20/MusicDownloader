@@ -15,7 +15,7 @@ function VideoDownloader() {
     setLoading(true);
 
     try {
-        const response = await fetch('https://songsdownloader.onrender.com/video', {
+        const response = await fetch('https://songs-kd5e.onrender.com/video', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ youtube_url: youtubeUrl })
