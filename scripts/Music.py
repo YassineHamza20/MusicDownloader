@@ -43,6 +43,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder, retries=5):
+    user_agent = {'User-Agent': 'your bot 0.1'}
     for attempt in range(retries):
         try:
             print("Downloading video from URL:", youtube_url, file=sys.stderr)
@@ -62,7 +63,7 @@ def download_video_as_mp3(youtube_url, output_folder, retries=5):
             # Download thumbnail
             thumb_url = yt.thumbnail_url
             print("Downloading thumbnail from URL:", thumb_url, file=sys.stderr)
-            response = requests.get(thumb_url)
+            response = requests.get(thumb_url, headers=user_agent)
             thumb_path = folder_path / "thumbnail.jpg"
             with open(thumb_path, 'wb') as thumb_file:
                 thumb_file.write(response.content)
