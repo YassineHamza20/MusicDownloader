@@ -1,9 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 const app = express();
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+  });
+app.use(limiter);
 app.use(express.json());
- 
+
+
 // CORS options to allow specific origins
 const corsOptions = {
     origin: ['https://melodyaddicts.netlify.app', 'https://songsdownloader.onrender.com'],
