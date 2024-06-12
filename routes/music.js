@@ -5,7 +5,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');.
 
 //health
-router.get('/check', (req, res) => {
+router.get('/check',musicRateLimiter, (req, res) => {
   const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'check_environment.py');
   try {
       const process = spawn('python', [pythonScriptPath]);
