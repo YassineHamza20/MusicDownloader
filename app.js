@@ -3,6 +3,9 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const app = express();
+
+app.set('trust proxy', 1);
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -20,7 +23,19 @@ const corsOptions = {
 
 // Apply CORS with the options
 app.use(cors(corsOptions));
-
+app.use('/downloads', express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, path) => {
+        res.setHeader('Content-Disposition', 'inline');
+    }
+  }));
+  // Apply the router
+  app.use("/", require("./routes/music"));
+  
+  // Route for the homepage
+  app.get('/', (req, res) => {
+      res.send('Backend is running');
+  });
+  
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {
@@ -34,18 +49,6 @@ app.use(cors(corsOptions));
 // }));
 // app.use('/downloads', express.static(path.join(__dirname, 'public')));
 
-app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, path) => {
-      res.setHeader('Content-Disposition', 'inline');
-  }
-}));
-// Apply the router
-app.use("/", require("./routes/music"));
-
-// Route for the homepage
-app.get('/', (req, res) => {
-    res.send('Backend is running');
-});
 
 // app.get('/heartbeat', (req, res) => {
 //   res.status(200).send('Server is awake!');

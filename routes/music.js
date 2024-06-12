@@ -39,10 +39,15 @@ router.get('/check', (req, res) => {
 });
 
 ///validation
-const isValidYouTubeUrl = (url) => {
-  const pattern = /^(https?:\/\/)?((www\.youtube\.com\/(watch\?v=|shorts\/))|(youtu\.be\/))[a-zA-Z0-9_-]{11}(\?.*)?$/;
-  return pattern.test(url);
-};
+function isValidYouTubeUrl(url) {
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+  return regex.test(url);
+}
+
+// const isValidYouTubeUrl = (url) => {
+//   const pattern = /^(https?:\/\/)?((www\.youtube\.com\/(watch\?v=|shorts\/))|(youtu\.be\/))[a-zA-Z0-9_-]{11}(\?.*)?$/;
+//   return pattern.test(url);
+// };
   const isValidPlaylistUrl = (url) => {
     const pattern = /^(https?:\/\/)?(www\.)?youtube\.com\/playlist\?list=[\w-]+(&[^\s]*)?$/;
     return pattern.test(url);
