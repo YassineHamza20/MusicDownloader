@@ -28,7 +28,7 @@ function App() {
       <div className="logo-container"> {/* Container for centering the logo */}
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
-        <h3 style={{ marginTop: '5px', color: 'white' }}>High Quality Music Downloader (320kbps) </h3> 
+        <h3 style={{ marginTop: '-50px', color: 'white' }}>High Quality Music Downloader   </h3> 
       </div>
     
       <div style={{ marginBottom: '-10px', textAlign: 'center' }}>
@@ -44,7 +44,7 @@ function App() {
         <Routes>
           <Route path="/" element={
             
-            <div style={{ position: 'relative', height: '350px', width: '100%' }}>
+            <div style={{ position: 'relative', height: '340px', width: '100%' }}>
               <div className={`cube ${viewMP4 ? 'is-flipped' : ''}`}>
                 
                 <div className="cube__face cube__face--front">

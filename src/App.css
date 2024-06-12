@@ -114,11 +114,11 @@ p{
   display: flex;
   justify-content: center; /* Centers content horizontally */
   align-items: center; /* Centers content vertically if needed */
-  width: 20%; /* Full width of the container */
+  width: 5%; /* Full width of the container */
 }
 
 .melody-logo {
-  width: 100px; /* Fixed width */
+  width: 80px; /* Fixed width */
   animation: logo-spin infinite 10s linear;
 }
 
@@ -135,13 +135,13 @@ p{
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .melody-logo {
-    width: 80px; /* Smaller width on mobile devices */
+    width: 40px; /* Smaller width on mobile devices */
   }
 }
 
 /* Further responsive adjustments for very small screens */
 @media (max-width: 480px) {
   .melody-logo {
-    width: 60px; /* Even smaller width for very small devices */
+    width: 40px; /* Even smaller width for very small devices */
   }
 }
