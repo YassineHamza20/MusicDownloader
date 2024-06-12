@@ -3,6 +3,12 @@ const path = require('path');
 const { spawn } = require('child_process');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
+//rate limiter 
+const musicRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes'
+});
 
 //health
 router.get('/check',musicRateLimiter, (req, res) => {
@@ -53,12 +59,6 @@ function isValidYouTubeUrl(url) {
     return pattern.test(url);
   };
 
-//rate limiter 
-  const musicRateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // Limit each IP to 10 requests per windowMs
-    message: 'Too many requests from this IP, please try again after 15 minutes'
-});
 
  
 //music
