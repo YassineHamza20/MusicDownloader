@@ -6,8 +6,8 @@ const rateLimit = require('express-rate-limit');
 //rate limiter 
 const musicRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 10 requests per windowMs
-  message: 'Too many requests from this IP, please try again after 15 minutes'
+  max: 40, // Limit each IP to 10 requests per windowMs
+  message: 'Slow down brotha ,Too many requests from this IP, please try again after 15 minutes :)'
 });
 
 //health
