@@ -31,9 +31,9 @@ function App() {
         <h3 style={{ marginTop: '5px', color: 'white' }}>High Quality Music Downloader (320kbps) </h3> 
       </div>
     
-      <div style={{ marginBottom: '0px', textAlign: 'center' }}>
+      <div style={{ marginBottom: '-10px', textAlign: 'center' }}>
         <button onClick={toggleMediaView} style={{
-          backgroundColor: '#081d48', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '17px'
+          backgroundColor: '#081d48', color: 'white', padding: '10px 40px', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '17px'
         }}>
           
           {viewMP4 ? "Change To Mp3" : "Change To Mp4"}   
@@ -44,7 +44,7 @@ function App() {
         <Routes>
           <Route path="/" element={
             
-            <div style={{ position: 'relative', height: '390px', width: '100%' }}>
+            <div style={{ position: 'relative', height: '350px', width: '100%' }}>
               <div className={`cube ${viewMP4 ? 'is-flipped' : ''}`}>
                 
                 <div className="cube__face cube__face--front">
