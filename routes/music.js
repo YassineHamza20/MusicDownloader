@@ -2,7 +2,7 @@ const express = require("express");
 const path = require('path');
 const { spawn } = require('child_process');
 const router = express.Router();
-const rateLimit = require('express-rate-limit');.
+const rateLimit = require('express-rate-limit');
 
 //health
 router.get('/check',musicRateLimiter, (req, res) => {
