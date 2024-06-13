@@ -15,12 +15,12 @@ app.use((req, res, next) => {
     res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
     next();
   });
-  
+
 app.set('trust proxy', 1);
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 40, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    max: 10, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
     message: 'Slow down brotha ,Too many requests from this IP, please try again after 15 minutes :) '
   });
 app.use(limiter);
