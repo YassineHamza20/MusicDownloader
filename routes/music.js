@@ -40,7 +40,7 @@ router.get('/check',musicRateLimiter, (req, res) => {
       });
   } catch (error) {
       console.error('Error spawning Python script:', error);
-      res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
 
@@ -103,7 +103,7 @@ router.post('/music', musicRateLimiter, async (req, res) => {
       });
   } catch (error) {
       console.error('Error spawning Python script:', error);
-      res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
 
@@ -149,7 +149,7 @@ router.post('/video', musicRateLimiter, async (req, res) => {
       });
   } catch (error) {
       console.error('Error spawning Python script:', error);
-      res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
 
