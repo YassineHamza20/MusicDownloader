@@ -196,7 +196,7 @@ router.post('/playlist', async (req, res) => {
       });
   } catch (error) {
       console.error('Server Error:', error);
-      res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
   router.post('/videoplaylist', async (req, res) => {
@@ -238,7 +238,7 @@ router.post('/playlist', async (req, res) => {
       });
     } catch (error) {
       console.error('Server Error:', error);
-      res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
     }
   });
 
