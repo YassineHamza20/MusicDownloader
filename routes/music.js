@@ -142,7 +142,7 @@ router.post('/video', musicRateLimiter, async (req, res) => {
               console.error('Python script failed with code:', code, 'and error:', scriptError);
               res.status(500).json({
                   success: false,
-                  message: 'Failed to download video.',
+                  message: 'Too many requests sorry',
                   error: scriptError || 'Unknown error detected, please check logs'
               });
           }
