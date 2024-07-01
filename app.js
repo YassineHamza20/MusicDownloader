@@ -41,10 +41,12 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
     }
   }));
   // Apply the router
-  app.use("/",limiter, require("./routes/music"));
+//limiter, 
+  app.use("/",require("./routes/music"));
   
   // Route for the homepage
-  app.get('/', limiter,(req, res) => {
+  //limiter,
+  app.get('/', (req, res) => {
       res.send('Backend is running');
   });
   

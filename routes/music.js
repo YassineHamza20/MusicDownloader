@@ -11,7 +11,8 @@ const musicRateLimiter = rateLimit({
 });
 
 //health
-router.get('/check',musicRateLimiter, (req, res) => {
+//,musicRateLimiter
+router.get('/check', (req, res) => {
   const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'check_environment.py');
   try {
       const process = spawn('python', [pythonScriptPath]);
@@ -62,7 +63,8 @@ function isValidYouTubeUrl(url) {
 
  
 //music
-router.post('/music', musicRateLimiter, async (req, res) => {
+//, musicRateLimiter
+router.post('/music', async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -108,7 +110,8 @@ router.post('/music', musicRateLimiter, async (req, res) => {
 });
 
 //video
-router.post('/video', musicRateLimiter, async (req, res) => {
+//, musicRateLimiter
+router.post('/video', async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
