@@ -15,7 +15,7 @@ function AboutMePopup() {
         <br></br> <div>
       Feel free to reach out via 
       <a href="https://www.linkedin.com/in/yassine-hamza17/" target="_blank" rel="noopener noreferrer">
-        LinkedIn
+        : LinkedIn
       </a>
     </div>
        
