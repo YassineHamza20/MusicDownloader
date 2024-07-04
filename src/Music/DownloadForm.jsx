@@ -10,12 +10,13 @@ function MusicDownloader() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-        const response = await fetch('https://musicdownloader1.onrender.com/playlist', {
+        const response = await fetch('https://songs-kd5e.onrender.com/music', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ youtube_url: youtubeUrl })
@@ -27,24 +28,25 @@ function MusicDownloader() {
                 const downloadUrl = data.downloadUrl;
                 const link = document.createElement('a');
                 link.href = downloadUrl;
-                link.setAttribute('download', 'playlist.zip'); // Set the filename for the download
+                link.setAttribute('download', ''); // Let the browser use the filename from the URL
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
 
-                setMessage('Playlist downloaded successfully');
+                // setMessage('Song downloaded successfully');
+                setMessage('Click The 3 Dots On the Next Page To Download');
                 setIsSuccess(true);
-                toast.success('Playlist downloaded successfully');
+                // toast.success('Song downloaded successfully');
             } else {
                 setMessage(`Error: ${data.message}`);
                 setIsSuccess(false);
-                toast.error(`Error: ${data.message}`);
+                // toast.error(`Error: ${data.message}`);
             }
         } else {
             const errorData = await response.json();
             setMessage(`Error: ${errorData.message}`);
             setIsSuccess(false);
-            toast.error(`Error: ${errorData.message}`);
+            // toast.error(`Error: ${errorData.message}`);
         }
     } catch (error) {
         console.error('Error:', error);
