@@ -156,7 +156,7 @@ router.post('/video', async (req, res) => {
   }
 });
 
-app.post('/playlist', (req, res) => {
+router.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url) {
