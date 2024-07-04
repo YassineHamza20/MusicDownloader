@@ -4,10 +4,9 @@ import os
 import subprocess
 from pathlib import Path
 import re
-from pytube import YouTube, Playlist
+from pytube import Playlist, YouTube
 from pydub import AudioSegment
 import traceback
-import zipfile
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -71,38 +70,25 @@ def download_video_as_mp3(youtube_url, output_folder):
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
 
-def download_playlist_as_mp3s(playlist_url, output_folder):
+def download_playlist(playlist_url, output_folder):
     try:
         playlist = Playlist(playlist_url)
-        print(f"Starting download of playlist: {playlist.title}")
-        downloaded_files = []
+        print(f"Downloading playlist: {playlist.title}")
         for video_url in playlist.video_urls:
-            print(f"Downloading {video_url}")
-            filename = download_video_as_mp3(video_url, output_folder)
-            if filename:
-                downloaded_files.append(filename)
-        
-        # Create a ZIP file containing all downloaded MP3s
-        zip_filename = f"{sanitize_filename(playlist.title)}.zip"
-        zip_filepath = Path(output_folder) / zip_filename
-        with zipfile.ZipFile(zip_filepath, 'w') as zipf:
-            for file in downloaded_files:
-                zipf.write(Path(output_folder) / file, file)
-        
-        return zip_filename
+            print(f"Downloading video: {video_url}")
+            result = download_video_as_mp3(video_url, output_folder)
+            if result:
+                print(f"Successfully downloaded: {result}")
+            else:
+                print(f"Failed to download: {video_url}")
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
-        return None
+        return None  # Return None in case of error
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python playlist.py <playlist_url>", file=sys.stderr)
+        print("Usage: python your_script.py <youtube_playlist_url>", file=sys.stderr)
         sys.exit(1)
     playlist_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-    result = download_playlist_as_mp3s(playlist_url, output_folder)
-    if result:
-        print(result)
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    download_playlist(playlist_url, output_folder)
