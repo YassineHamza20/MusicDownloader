@@ -62,7 +62,7 @@ const handleSubmit = async (event) => {
   setLoading(true);
 
   try {
-      const response = await fetch('https://songs-kd5e.onrender.com/playlist', {
+      const response = await fetch('https://musicdownloader1.onrender.com/playlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ youtube_url: youtubeUrl })
@@ -72,27 +72,21 @@ const handleSubmit = async (event) => {
           const data = await response.json();
           if (data.success) {
               const downloadUrl = data.downloadUrl;
-              const link = document.createElement('a');
-              link.href = downloadUrl;
-              link.setAttribute('download', ''); // Let the browser use the filename from the URL
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+              window.location.href = downloadUrl;
 
-              // setMessage('Song downloaded successfully');
-              setMessage('Click The 3 Dots On the Next Page To Download');
+              setMessage('Playlist downloaded successfully');
               setIsSuccess(true);
-              // toast.success('Song downloaded successfully');
+              toast.success('Playlist downloaded successfully');
           } else {
               setMessage(`Error: ${data.message}`);
               setIsSuccess(false);
-              // toast.error(`Error: ${data.message}`);
+              toast.error(`Error: ${data.message}`);
           }
       } else {
           const errorData = await response.json();
           setMessage(`Error: ${errorData.message}`);
           setIsSuccess(false);
-          // toast.error(`Error: ${errorData.message}`);
+          toast.error(`Error: ${errorData.message}`);
       }
   } catch (error) {
       console.error('Error:', error);
