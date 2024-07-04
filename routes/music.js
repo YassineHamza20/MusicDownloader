@@ -172,7 +172,7 @@ router.post('/video', async (req, res) => {
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-pp.post('/playlist', (req, res) => {
+app.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url) {
