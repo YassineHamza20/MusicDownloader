@@ -12,7 +12,12 @@ function AboutMePopup() {
         with a passion for programming, development, and music. Combining my interests, I've created this high-quality
         music website for people like you who love to enjoy good 
         music while studying or working.
-        <br></br>Feel free to reach out via Discord : yass#7593 
+        <br></br> <div>
+      Feel free to reach out via 
+      <a href="https://www.linkedin.com/in/yassine-hamza17/" target="_blank" rel="noopener noreferrer">
+        LinkedIn
+      </a>
+    </div>
        
       
       </p>  
