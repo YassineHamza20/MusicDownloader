@@ -160,20 +160,6 @@ router.post('/video', async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
@@ -224,6 +210,19 @@ app.get('/downloads/:filename', (req, res) => {
   const filepath = path.join(__dirname, 'public', 'downloads', filename);
   res.download(filepath);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   router.post('/videoplaylist', async (req, res) => {
