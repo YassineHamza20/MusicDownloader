@@ -32,6 +32,8 @@ const corsOptions = {
     origin: ['https://melodyaddicts.netlify.app', 'https://songsdownloader.onrender.com'],
     optionsSuccessStatus: 200 // For legacy browser support
 };
+app.use(express.json());
+app.use('/downloads', express.static(path.join(__dirname, 'public', 'downloads')));
 
 // Apply CORS with the options
 app.use(cors(corsOptions));
@@ -43,13 +45,29 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
   app.get('/downloads/:filename', (req, res) => {
     const filename = req.params.filename;
     const filepath = path.join(__dirname, 'public', 'downloads', filename);
-    res.download(filepath);
-  });
+    console.log(`Downloading file from path: ${filepath}`);
+    res.download(filepath, (err) => {
+        if (err) {
+            console.error(`Error downloading file: ${err}`);
+            res.status(404).send('File not found');
+        }
+    });
+});
   
   // Apply the router
 //limiter, 
   app.use("/",require("./routes/music"));
-  
+  app.get('/downloads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filepath = path.join(__dirname, 'public', 'downloads', filename);
+    console.log(`Filepath: ${filepath}`); // Log the filepath for debugging
+    res.download(filepath, (err) => {
+        if (err) {
+            console.error(`Error downloading file: ${err}`);
+            res.status(404).send('File not found');
+        }
+    });
+});
   // Route for the homepage
   //limiter,
   app.get('/', (req, res) => {
