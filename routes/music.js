@@ -156,7 +156,7 @@ router.post('/video', async (req, res) => {
   }
 });
 
-Router.post('/playlist', (req, res) => {
+router.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
   const scriptPath = path.join(__dirname, 'your_script.py');
   const outputFolder = path.join(__dirname, 'public', 'downloads');
