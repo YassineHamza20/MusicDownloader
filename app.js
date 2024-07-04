@@ -49,7 +49,11 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
   app.get('/', (req, res) => {
       res.send('Backend is running');
   });
-  
+  app.get('/downloads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filepath = path.join(__dirname, 'public', 'downloads', filename);
+    res.download(filepath);
+});
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {

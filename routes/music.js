@@ -170,8 +170,10 @@ router.post('/video', async (req, res) => {
 
 
 
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
@@ -179,7 +181,7 @@ app.post('/playlist', (req, res) => {
       return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
   }
 
-  const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'playlist.py');
+  const pythonScriptPath = path.join(__dirname, 'scripts', 'playlist.py');
   const args = [youtube_url];
 
   try {
@@ -217,6 +219,11 @@ app.post('/playlist', (req, res) => {
   }
 });
 
+app.get('/downloads/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, 'public', 'downloads', filename);
+  res.download(filepath);
+});
 
 
   router.post('/videoplaylist', async (req, res) => {
