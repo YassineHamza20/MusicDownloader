@@ -156,7 +156,23 @@ router.post('/video', async (req, res) => {
       res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
-app.post('/playlist', (req, res) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+pp.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url) {
@@ -201,9 +217,6 @@ app.post('/playlist', (req, res) => {
   }
 });
 
-app.use((req, res, next) => {
-  res.status(404).send('Sorry, can\'t find that!');
-});
 
 
   router.post('/videoplaylist', async (req, res) => {

@@ -33,7 +33,6 @@ const corsOptions = {
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
-app.use(express.static(path.join(__dirname, 'public')));
 // Apply CORS with the options
 app.use(cors(corsOptions));
 app.use('/downloads', express.static(path.join(__dirname, 'public'), {
