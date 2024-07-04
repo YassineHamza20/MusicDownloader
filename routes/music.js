@@ -156,28 +156,50 @@ router.post('/video', async (req, res) => {
   }
 });
 
-router.post('/playlist', (req, res) => {
-  const { youtube_url } = req.body;
-  const scriptPath = path.join(__dirname, 'your_script.py');
-  const outputFolder = path.join(__dirname, 'public', 'downloads');
 
-  exec(`python ${scriptPath} ${youtube_url}`, (error, stdout, stderr) => {
-      if (error) {
-          console.error(`exec error: ${error}`);
-          return res.status(500).json({ success: false, message: 'Internal server error' });
-      }
-      // Assuming stdout is a valid JSON string
-      const result = JSON.parse(stdout);
-      if (result.success) {
-          res.json({
-              success: true,
-              message: 'Playlist downloaded successfully',
-              downloadUrl: `http://musicdownloader1.onrender.com/downloads/`
-          });
-      } else {
-          res.status(500).json({ success: false, message: 'Failed to download playlist' });
-      }
-  });
+app.post('/playlist', (req, res) => {
+  const { youtube_url } = req.body;
+
+  if (!youtube_url) {
+      return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
+  }
+
+  const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'playlist.py');
+  const args = [youtube_url];
+
+  try {
+      const process = spawn('python', [pythonScriptPath, ...args]);
+      let output = '';
+      let scriptError = '';
+
+      process.stdout.on('data', (data) => {
+          output += data.toString().trim();  // Capture the filename from Python script output
+      });
+
+      process.stderr.on('data', (data) => {
+          scriptError += data.toString();
+      });
+
+      process.on('close', (code) => {
+          if (code === 0 && output) {
+              const lines = output.split('\n');
+              const filename = lines[lines.length - 1].trim();
+              const encodedFilename = encodeURIComponent(filename); // URL encode the output filename
+              const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodedFilename}`;
+              res.status(200).json({ success: true, message: 'Playlist downloaded successfully', downloadUrl });
+          } else {
+              console.error('Python script failed with code:', code, 'and error:', scriptError);
+              res.status(500).json({
+                  success: false,
+                  message: 'Failed to download playlist',
+                  error: scriptError || 'Unknown error detected, please check logs'
+              });
+          }
+      });
+  } catch (error) {
+      console.error('Error spawning Python script:', error);
+      res.status(500).json({ success: false, message: 'Failed to download playlist', error: error.message });
+  }
 });
 
 
