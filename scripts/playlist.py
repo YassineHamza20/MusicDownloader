@@ -81,14 +81,24 @@ def download_playlist(playlist_url, output_folder):
                 print(f"Successfully downloaded: {result}")
             else:
                 print(f"Failed to download: {video_url}")
+        return True
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
-        return None  # Return None in case of error
+        return False
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python your_script.py <youtube_playlist_url>", file=sys.stderr)
         sys.exit(1)
     playlist_url = sys.argv[1]
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-    download_playlist(playlist_url, output_folder)
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public', 'downloads')
+    success = download_playlist(playlist_url, output_folder)
+    if success:
+        print({
+            "success": True,
+            "message": "Playlist downloaded successfully",
+            "downloadUrl": f"http://musicdownloader1.onrender.com/downloads/"
+        })
+        sys.exit(0)
+    else:
+        sys.exit(1)

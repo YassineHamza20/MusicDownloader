@@ -156,52 +156,32 @@ router.post('/video', async (req, res) => {
   }
 });
 
-
-router.post('/playlist', async (req, res) => {
+app.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
+  const scriptPath = path.join(__dirname, 'your_script.py');
+  const outputFolder = path.join(__dirname, 'public', 'downloads');
 
-  console.log("Received URL for validation:", youtube_url);
-  if (!youtube_url || !isValidPlaylistUrl(youtube_url)) {
-      console.log("Validation failed for URL:", youtube_url);
-      return res.status(400).json({ success: false, message: 'Please insert a valid Playlist YouTube URL' });
-  }
-
-  const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'playlist.py');
-  const args = [youtube_url];
-  try {
-      const process = spawn('python', [pythonScriptPath, ...args]);
-      let output = '';
-      let scriptError = '';
-
-      process.stdout.on('data', (data) => {
-          output += data.toString();
-      });
-
-      process.stderr.on('data', (data) => {
-          scriptError += data.toString();
-      });
-
-      process.on('close', (code) => {
-          console.log(`Process exited with code ${code}`);
-          if (code === 0) {
-              const lines = output.split('\n');
-              const lastLine = lines[lines.length - 1].trim();
-              const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodeURIComponent(lastLine)}`;
-              res.status(200).json({ success: true, message: 'Playlist downloaded successfully', downloadUrl });
-          } else {
-              console.error('Python script error:', scriptError);
-              res.status(500).json({
-                  success: false,
-                  message: 'Failed to download playlist.',
-                  error: scriptError
-              });
-          }
-      });
-  } catch (error) {
-      console.error('Server Error:', error);
-      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
-  }
+  exec(`python ${scriptPath} ${youtube_url}`, (error, stdout, stderr) => {
+      if (error) {
+          console.error(`exec error: ${error}`);
+          return res.status(500).json({ success: false, message: 'Internal server error' });
+      }
+      // Assuming stdout is a valid JSON string
+      const result = JSON.parse(stdout);
+      if (result.success) {
+          res.json({
+              success: true,
+              message: 'Playlist downloaded successfully',
+              downloadUrl: `http://musicdownloader1.onrender.com/downloads/`
+          });
+      } else {
+          res.status(500).json({ success: false, message: 'Failed to download playlist' });
+      }
+  });
 });
+
+
+
   router.post('/videoplaylist', async (req, res) => {
     const { youtube_url } = req.body;
   
