@@ -3,6 +3,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
+const app = express();
 //rate limiter 
 const musicRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -155,8 +156,7 @@ router.post('/video', async (req, res) => {
       res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
-
-router.post('/playlist', (req, res) => {
+app.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url) {
@@ -199,6 +199,10 @@ router.post('/playlist', (req, res) => {
       console.error('Error spawning Python script:', error);
       res.status(500).json({ success: false, message: 'Failed to download playlist', error: error.message });
   }
+});
+
+app.use((req, res, next) => {
+  res.status(404).send('Sorry, can\'t find that!');
 });
 
 
