@@ -7,6 +7,7 @@ import re
 from pytube import Playlist, YouTube
 from pydub import AudioSegment
 import traceback
+import zipfile
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -74,17 +75,28 @@ def download_playlist(playlist_url, output_folder):
     try:
         playlist = Playlist(playlist_url)
         print(f"Downloading playlist: {playlist.title}")
+        downloaded_files = []
         for video_url in playlist.video_urls:
             print(f"Downloading video: {video_url}")
             result = download_video_as_mp3(video_url, output_folder)
             if result:
                 print(f"Successfully downloaded: {result}")
+                downloaded_files.append(result)
             else:
                 print(f"Failed to download: {video_url}")
-        return True
+
+        # Create a zip file of the downloaded MP3 files
+        zip_filename = "playlist.zip"
+        zip_filepath = Path(output_folder) / zip_filename
+        with zipfile.ZipFile(zip_filepath, 'w') as zipf:
+            for file in downloaded_files:
+                file_path = Path(output_folder) / file
+                zipf.write(file_path, file_path.name)
+        
+        return zip_filename  # Return the zip filename for Node.js to capture
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
-        return False
+        return None  # Return None in case of error
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -92,13 +104,9 @@ if __name__ == "__main__":
         sys.exit(1)
     playlist_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public', 'downloads')
-    success = download_playlist(playlist_url, output_folder)
-    if success:
-        print({
-            "success": True,
-            "message": "Playlist downloaded successfully",
-            "downloadUrl": f"http://musicdownloader1.onrender.com/downloads/"
-        })
+    result = download_playlist(playlist_url, output_folder)
+    if result:
+        print(result)
         sys.exit(0)
     else:
         sys.exit(1)

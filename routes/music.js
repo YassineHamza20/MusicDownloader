@@ -156,7 +156,6 @@ router.post('/video', async (req, res) => {
   }
 });
 
-
 router.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
@@ -164,7 +163,7 @@ router.post('/playlist', (req, res) => {
       return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
   }
 
-  const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'playlist.py');
+  const pythonScriptPath = path.join(__dirname, 'your_script.py');
   const args = [youtube_url];
 
   try {
@@ -201,7 +200,6 @@ router.post('/playlist', (req, res) => {
       res.status(500).json({ success: false, message: 'Failed to download playlist', error: error.message });
   }
 });
-
 
 
   router.post('/videoplaylist', async (req, res) => {
