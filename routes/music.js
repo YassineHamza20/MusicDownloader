@@ -156,14 +156,14 @@ router.post('/video', async (req, res) => {
   }
 });
 
-router.post('/playlist', (req, res) => {
+app.post('/playlist', (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url) {
       return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
   }
 
-  const pythonScriptPath = path.join(__dirname, 'your_script.py');
+  const pythonScriptPath = path.join(__dirname, '..', 'scripts', 'playlist.py');
   const args = [youtube_url];
 
   try {
