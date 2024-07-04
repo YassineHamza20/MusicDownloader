@@ -58,8 +58,6 @@ function PlaylistDownloader() {
 //     }
 // }; 
 
-
-
 const handleSubmit = async (event) => {
   event.preventDefault();
   setLoading(true);
@@ -75,7 +73,12 @@ const handleSubmit = async (event) => {
           const data = await response.json();
           if (data.success) {
               const downloadUrl = data.downloadUrl;
-              window.location.href = downloadUrl;
+              const link = document.createElement('a');
+              link.href = downloadUrl;
+              link.setAttribute('download', 'playlist.zip'); // Set the filename for the download
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
 
               setMessage('Playlist downloaded successfully');
               setIsSuccess(true);
@@ -100,8 +103,6 @@ const handleSubmit = async (event) => {
       setLoading(false);
   }
 };
-
-
   return (
     <>
     <div className="music-downloader-container">
