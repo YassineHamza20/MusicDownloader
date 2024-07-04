@@ -59,50 +59,50 @@ function PlaylistDownloader() {
 // }; 
 
 const handleSubmit = async (event) => {
-  event.preventDefault();
-  setLoading(true);
+        event.preventDefault();
+        setLoading(true);
 
-  try {
-      const response = await fetch('https://musicdownloader1.onrender.com/playlist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ youtube_url: youtubeUrl })
-      });
+        try {
+            const response = await fetch('https://musicdownloader1.onrender.com/playlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ youtube_url: youtubeUrl })
+            });
 
-      if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-              const downloadUrl = data.downloadUrl;
-              const link = document.createElement('a');
-              link.href = downloadUrl;
-              link.setAttribute('download', 'playlist.zip'); // Set the filename for the download
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    const downloadUrl = data.downloadUrl;
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.setAttribute('download', 'playlist.zip'); // Set the filename for the download
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
 
-              setMessage('Playlist downloaded successfully');
-              setIsSuccess(true);
-              toast.success('Playlist downloaded successfully');
-          } else {
-              setMessage(`Error: ${data.message}`);
-              setIsSuccess(false);
-              toast.error(`Error: ${data.message}`);
-          }
-      } else {
-          const errorData = await response.json();
-          setMessage(`Error: ${errorData.message}`);
-          setIsSuccess(false);
-          toast.error(`Error: ${errorData.message}`);
-      }
-  } catch (error) {
-      console.error('Error:', error);
-      setMessage('Internal server error');
-      setIsSuccess(false);
-      toast.error('Internal server error');
-  } finally {
-      setLoading(false);
-  }
-};
+                    setMessage('Playlist downloaded successfully');
+                    setIsSuccess(true);
+                    toast.success('Playlist downloaded successfully');
+                } else {
+                    setMessage(`Error: ${data.message}`);
+                    setIsSuccess(false);
+                    toast.error(`Error: ${data.message}`);
+                }
+            } else {
+                const errorData = await response.json();
+                setMessage(`Error: ${errorData.message}`);
+                setIsSuccess(false);
+                toast.error(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setMessage('Internal server error');
+            setIsSuccess(false);
+            toast.error('Internal server error');
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
   return (

@@ -49,12 +49,10 @@ function App() {
                 
                 <div className="cube__face cube__face--front">
                   <MusicDownloader />   
-                  <PlaylistDownloader></PlaylistDownloader>
                 </div>
                
                 <div className="cube__face cube__face--back">
                   <VideoDownloader />  
-                  <PlaylistDownloaderVideo></PlaylistDownloaderVideo>
                 </div>
                 
               </div>
