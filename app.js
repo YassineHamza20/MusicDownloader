@@ -42,7 +42,7 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
   }));
   // Apply the router
 //limiter, 
-  app.use("/",require("./routes/music"));
+  app.use("/",limiter,require("./routes/music"));
   
   // Route for the homepage
   //limiter,
