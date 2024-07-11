@@ -1,3 +1,3 @@
 requests
-pytube
+pytube==3.12.4
 pydub
