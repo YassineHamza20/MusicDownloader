@@ -26,7 +26,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     cmd = [
         ffmpeg_path, '-i', str(audio_path), '-i', str(image_path),
         '-map', '0:0', '-map', '1:0', '-c', 'copy', '-id3v2_version', '3',
-        '-metadata:s:v', 'title="Album cover"', '-metadata:s:v', 'comment="Cover (front)"',
+        '-metadata:s:v', 'title=Album cover', '-metadata:s:v', 'comment=Cover (front)',
         str(output_path)
     ]
     try:
