@@ -7,6 +7,7 @@ import re
 from pydub import AudioSegment
 import traceback
 import yt_dlp
+import time
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -39,21 +40,34 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
     os.replace(output_path, audio_path)
 
-def download_video_as_mp3(youtube_url, output_folder):
+def download_video_as_mp3(youtube_url, output_folder, retries=5, delay=60):
+    def retry_yt_dlp_download(url, retries, delay):
+        for attempt in range(retries):
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    return ydl.extract_info(url, download=True)
+            except yt_dlp.utils.DownloadError as e:
+                if '429' in str(e):
+                    print(f"HTTP 429: Too Many Requests. Retrying in {delay} seconds... (Attempt {attempt + 1}/{retries})")
+                    time.sleep(delay)
+                else:
+                    raise e
+        raise Exception("Maximum retries exceeded")
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': str(Path(output_folder) / '%(title)s.%(ext)s'),
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '320',
+        }],
+    }
+
     try:
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': str(Path(output_folder) / '%(title)s.%(ext)s'),
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }],
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(youtube_url, download=True)
-            title = sanitize_filename(info_dict.get('title', 'audio'))
-            output_path = Path(output_folder) / f"{title}.mp3"
+        info_dict = retry_yt_dlp_download(youtube_url, retries, delay)
+        title = sanitize_filename(info_dict.get('title', 'audio'))
+        output_path = Path(output_folder) / f"{title}.mp3"
 
         # Download thumbnail
         thumb_url = info_dict.get('thumbnail')
