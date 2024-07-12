@@ -3,79 +3,91 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const { spawn } = require('child_process');
 const app = express();
+
 app.use(helmet());
 app.use((req, res, next) => {
     res.setHeader('X-Frame-Options', 'DENY');
     next();
-  });
-  
-  // Set Content Security Policy header to prevent framing
-  app.use((req, res, next) => {
+});
+
+app.use((req, res, next) => {
     res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
     next();
-  });
+});
 
 app.set('trust proxy', 1);
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 20, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    message: 'Slow down brotha ,Too many requests from this IP, please try again after 15 minutes :) '
-  });
+    max: 20, // Limit each IP to 20 requests per `window` (here, per 15 minutes)
+    message: 'Slow down, too many requests from this IP, please try again after 15 minutes.'
+});
 app.use(limiter);
 app.use(express.json());
+function sanitizeFilename(filename) {
+  return filename.replace(/[<>:"/\\|?*]+/g, '_');
+}
 
+// Validate YouTube URL function
+function isValidYouTubeUrl(url) {
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+  return regex.test(url);
+}
 
-// CORS options to allow specific origins
 const corsOptions = {
     origin: ['https://melodyaddicts.netlify.app', 'https://songs-kd5e.onrender.com'],
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
-// Apply CORS with the options
 app.use(cors(corsOptions));
-app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-    setHeaders: (res, path) => {
-        res.setHeader('Content-Disposition', 'inline');
+
+app.post('/music', async (req, res) => {
+    const { youtube_url } = req.body;
+
+    
+    const pythonScriptPath = path.join(__dirname, 'scripts', 'Music.py');
+    const args = [youtube_url];
+
+    try {
+        const process = spawn('python', [pythonScriptPath, ...args], { stdio: ['pipe', 'pipe', 'pipe'] });
+        let output = Buffer.from('');
+        let scriptError = '';
+
+        process.stdout.on('data', (data) => {
+            output = Buffer.concat([output, data]);
+        });
+
+        process.stderr.on('data', (data) => {
+            scriptError += data.toString();
+        });
+
+        process.on('close', (code) => {
+            if (code === 0 && output.length > 0) {
+                res.setHeader('Content-Type', 'audio/mpeg');
+                res.setHeader('Content-Disposition', `attachment; filename="${sanitizeFilename(youtube_url)}.mp3"`);
+                res.send(output);
+            } else {
+                console.error('Python script failed with code:', code, 'and error:', scriptError);
+                res.status(500).json({
+                    success: false,
+                    message: 'Too many requests sorry',
+                    error: scriptError || 'Unknown error detected, please check logs'
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Error spawning Python script:', error);
+        res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
     }
-  }));
-  // Apply the router
-//limiter, 
-  app.use("/",limiter,require("./routes/music"));
-  
-  // Route for the homepage
-  //limiter,
-  app.get('/', (req, res) => {
-      res.send('Backend is running');
-  });
-  
-// Serve static files from the 'public' directory
-// app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-//     setHeaders: (res, path) => {
-//         res.setHeader('Content-Disposition', `attachment; filename="${path.split('/').pop()}"`);
-//     }
-// }));
-// app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-//   setHeaders: (res, path) => {
-//       res.setHeader('Content-Disposition', 'attachment');
-//   }
-// }));
-// app.use('/downloads', express.static(path.join(__dirname, 'public')));
+});
 
+app.get('/', (req, res) => {
+    res.send('Backend is running');
+});
 
-// app.get('/heartbeat', (req, res) => {
-//   res.status(200).send('Server is awake!');
-// });
-// function keepServerAwake() {
-//   const url = "https://musicdownloader1.onrender.com/heartbeat"; // Change to your actual server URL
-//   fetch(url).then(response => response.text()).then(console.log).catch(console.error);
-
-//   // Set timeout for next ping
-//   setTimeout(keepServerAwake, 14 * 60 * 1000 + 50 * 1000); // 14 minutes and 50 seconds
-// }
-
-// // Start the pinging process
-// keepServerAwake();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+// Utility function to sanitize filename
