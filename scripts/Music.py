@@ -29,7 +29,16 @@ def embed_album_art_ffmpeg(audio_path, image_path):
         '-metadata:s:v', 'title=Album_cover', '-metadata:s:v', 'comment=Cover_(front)',
         str(output_path)
     ]
+    
     try:
+        if not audio_path.exists():
+            print(f"Error: Audio file {audio_path} does not exist.", file=sys.stderr)
+            return
+        
+        if not image_path.exists():
+            print(f"Error: Image file {image_path} does not exist.", file=sys.stderr)
+            return
+
         result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.stderr:
             print("FFmpeg stderr:", result.stderr.decode(), file=sys.stderr)
@@ -63,6 +72,9 @@ def download_video_as_mp3(youtube_url, output_folder):
         thumb_path = Path(output_folder) / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
+
+        print(f"Downloaded thumbnail to {thumb_path}")
+        print(f"Checking if audio file exists at {output_path}")
 
         # Embed album art
         embed_album_art_ffmpeg(output_path, thumb_path)
