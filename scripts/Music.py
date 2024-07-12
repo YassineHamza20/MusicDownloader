@@ -4,9 +4,10 @@ import os
 import subprocess
 from pathlib import Path
 import re
-from pytube import YouTube
+from pytube import YouTube, exceptions
 from pydub import AudioSegment
 import traceback
+import time
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -40,12 +41,24 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder):
+    def retry_get_audio_only(yt, retries=5, backoff_factor=0.5):
+        for attempt in range(retries):
+            try:
+                return yt.streams.get_audio_only()
+            except exceptions.VideoUnavailable:
+                print(f"Video unavailable, attempt {attempt + 1} of {retries}")
+                time.sleep(backoff_factor * (2 ** attempt))
+            except exceptions.PytubeError as e:
+                print(f"Pytube error: {e}, attempt {attempt + 1} of {retries}")
+                time.sleep(backoff_factor * (2 ** attempt))
+        raise Exception("Maximum retries exceeded")
+
     try:
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
-        video = yt.streams.get_audio_only()
+        video = retry_get_audio_only(yt)
         temp_file = video.download(output_path=folder_path)
         output_path = folder_path / f"{title}.mp3"
         audio_segment = AudioSegment.from_file(temp_file)
