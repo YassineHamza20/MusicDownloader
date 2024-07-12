@@ -75,7 +75,6 @@ app.listen(PORT, () => {
 });
 
 
-
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {
