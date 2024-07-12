@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 from pydub import AudioSegment
 import traceback
-from youtubesearchpython import VideosSearch
+import youtube_dl
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -38,48 +38,41 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
     os.replace(output_path, audio_path)
 
-def download_audio(url, output_folder):
+def download_video_as_mp3(youtube_url, output_folder):
     try:
-        title = "audio"
-        folder_path = Path(output_folder)
-        folder_path.mkdir(parents=True, exist_ok=True)
-        output_path = folder_path / f"{title}.mp3"
-        temp_path = folder_path / f"{title}.wav"
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': f'{output_folder}/%(title)s.%(ext)s',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '320',
+            }]
+        }
 
-        # Download audio content
-        audio_response = requests.get(url, stream=True)
-        with open(temp_path, 'wb') as audio_file:
-            for chunk in audio_response.iter_content(chunk_size=1024):
-                if chunk:
-                    audio_file.write(chunk)
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(youtube_url, download=True)
+            title = sanitize_filename(info_dict.get('title', ''))
+            audio_file_path = f"{output_folder}/{title}.mp3"
 
-        # Convert to MP3 using pydub
-        audio_segment = AudioSegment.from_file(temp_path)
-        audio_segment.export(output_path, format='mp3', bitrate="320k")
+        # Download thumbnail
+        thumb_url = info_dict['thumbnail']
+        response = requests.get(thumb_url)
+        thumb_path = Path(output_folder) / "thumbnail.jpg"
+        with open(thumb_path, 'wb') as thumb_file:
+            thumb_file.write(response.content)
 
-        # Clean up temporary file
-        os.remove(temp_path)
-        
-        return output_path.name  # Return the filename for Node.js to capture
+        # Embed album art
+        embed_album_art_ffmpeg(Path(audio_file_path), thumb_path)
+
+        # Clean up thumbnail
+        os.remove(thumb_path)
+
+        return audio_file_path  # Return the filename for Node.js to capture
 
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
-
-def search_and_download_video(youtube_url, output_folder):
-    try:
-        search = VideosSearch(youtube_url, limit=1)
-        result = search.result()
-        video_info = result['result'][0]
-        video_id = video_info['id']
-        title = sanitize_filename(video_info['title'])
-        stream_url = f"https://www.youtubeinmp3.com/fetch/?video=https://www.youtube.com/watch?v={video_id}"
-
-        # Download and convert the video to mp3
-        return download_audio(stream_url, output_folder)
-    except Exception as e:
-        traceback.print_exc(file=sys.stderr)
-        return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -87,7 +80,7 @@ if __name__ == "__main__":
         sys.exit(1)
     youtube_url = sys.argv[1]
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-    result = search_and_download_video(youtube_url, output_folder)
+    result = download_video_as_mp3(youtube_url, output_folder)
     if result:
         print(result)
         sys.exit(0)

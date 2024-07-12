@@ -2,4 +2,4 @@ requests
 pydub
 yt-dlp
 pytube
-youtubesearchpython
+youtube_dl

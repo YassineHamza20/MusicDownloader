@@ -26,13 +26,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 app.use(express.json());
-
-const corsOptions = {
-    origin: ['https://melodyaddicts.netlify.app', 'https://songs-kd5e.onrender.com'],
-    optionsSuccessStatus: 200 // For legacy browser support
-};
-
-app.use(cors(corsOptions));
+// Utility function to sanitize filename
 function sanitizeFilename(filename) {
   return filename.replace(/[<>:"/\\|?*]+/g, '_');
 }
@@ -42,6 +36,13 @@ function isValidYouTubeUrl(url) {
   const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
   return regex.test(url);
 }
+
+const corsOptions = {
+    origin: ['https://melodyaddicts.netlify.app', 'https://songs-kd5e.onrender.com'],
+    optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
 
 app.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
@@ -93,4 +94,3 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-// Utility function to sanitize filename
