@@ -64,7 +64,7 @@ function isValidYouTubeUrl(url) {
  
 //music
 //, musicRateLimiter
-router.post('/music',musicRateLimiter, async (req, res) => {
+router.post('/music' , async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
