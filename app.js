@@ -23,7 +23,7 @@ app.set('trust proxy', 1);
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 20, // Limit each IP to 20 requests per `window` (here, per 15 minutes)
+    max: 20, // Limit each IP to 20 requests per window (here, per 15 minutes)
     message: 'Slow down brotha, Too many requests from this IP, please try again after 15 minutes :)'
 });
 app.use(limiter);
@@ -74,31 +74,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
-
-// Serve static files from the 'public' directory
-// app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-//     setHeaders: (res, path) => {
-//         res.setHeader('Content-Disposition', `attachment; filename="${path.split('/').pop()}"`);
-//     }
-// }));
-// app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-//   setHeaders: (res, path) => {
-//       res.setHeader('Content-Disposition', 'attachment');
-//   }
-// }));
-// app.use('/downloads', express.static(path.join(__dirname, 'public')));
-
-
-// app.get('/heartbeat', (req, res) => {
-//   res.status(200).send('Server is awake!');
-// });
-// function keepServerAwake() {
-//   const url = "https://musicdownloader1.onrender.com/heartbeat"; // Change to your actual server URL
-//   fetch(url).then(response => response.text()).then(console.log).catch(console.error);
-
-//   // Set timeout for next ping
-//   setTimeout(keepServerAwake, 14 * 60 * 1000 + 50 * 1000); // 14 minutes and 50 seconds
-// }
-
-// // Start the pinging process
-// keepServerAwake();
