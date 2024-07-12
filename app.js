@@ -62,6 +62,7 @@ app.get('/downloads/:filename', (req, res) => {
 
     fs.access(filepath, fs.constants.F_OK, (err) => {
         if (err) {
+            console.log(`File not found: ${filepath}`);
             res.status(404).send('File not found');
         } else {
             res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
