@@ -2,6 +2,9 @@
 # Stop the script if any command fails
 set -e
 
+# Uninstall pytube if it exists
+pip uninstall -y pytube
+
 # Install Node packages
 echo "Installing Node.js dependencies..."
 npm install
@@ -11,4 +14,3 @@ echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
 # Any other build steps can be added here
- 
