@@ -28,7 +28,7 @@ app.use(limiter);
 app.use(express.json());
 
 const corsOptions = {
-    origin: ['https://melodyaddicts.netlify.app', 'https://songsdownloader.onrender.com'],
+    origin: ['https://melodyaddicts.netlify.app', 'https://songs-kd5e.onrender.com'],
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
