@@ -10,7 +10,6 @@ function MusicDownloader() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -23,36 +22,27 @@ function MusicDownloader() {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            if (data.success) {
-                const downloadUrl = data.downloadUrl;
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', ''); // Let the browser use the filename from the URL
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute('download', 'song.mp3'); // You can set the default filename here
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(downloadUrl);
 
-                // setMessage('Song downloaded successfully');
-                setMessage('Click The 3 Dots On the Next Page To Download');
-                setIsSuccess(true);
-                // toast.success('Song downloaded successfully');
-            } else {
-                setMessage(`Error: ${data.message}`);
-                setIsSuccess(false);
-                // toast.error(`Error: ${data.message}`);
-            }
+            setMessage('Click The 3 Dots On the Next Page To Download');
+            setIsSuccess(true);
         } else {
             const errorData = await response.json();
             setMessage(`Error: ${errorData.message}`);
             setIsSuccess(false);
-            // toast.error(`Error: ${errorData.message}`);
         }
     } catch (error) {
         console.error('Error:', error);
         setMessage('Internal server error');
         setIsSuccess(false);
-        toast.error('Internal server error');
     } finally {
         setLoading(false);
     }
