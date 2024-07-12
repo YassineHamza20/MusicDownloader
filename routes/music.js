@@ -98,7 +98,7 @@ router.post('/music' , async (req, res) => {
               console.error('Python script failed with code:', code, 'and error:', scriptError);
               res.status(500).json({
                   success: false,
-                  message: 'Too many requests sorry',
+                  message: msg.error,
                   error: scriptError || 'Unknown error detected, please check logs'
               });
           }
