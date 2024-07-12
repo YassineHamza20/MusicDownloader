@@ -35,12 +35,12 @@ const corsOptions = {
 
 // Apply CORS with the options
 app.use(cors(corsOptions));
-app.use('/downloads', express.static(path.join(__dirname, 'public'), {
-    setHeaders: (res, path) => {
-        res.setHeader('Content-Disposition', 'inline');
-    }
-  }));
-  // Apply the router
+app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
+  setHeaders: (res, path) => {
+      res.setHeader('Content-Disposition', 'inline');
+  }
+}));
+ 
 //limiter, 
   app.use("/", require("./routes/music"));
   
@@ -49,7 +49,18 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
   app.get('/', (req, res) => {
       res.send('Backend is running');
   });
-  
+  app.get('/downloads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filepath = path.join(__dirname, '..', 'public', filename);
+
+    fs.access(filepath, fs.constants.F_OK, (err) => {
+        if (err) {
+            res.status(404).send('File not found');
+        } else {
+            res.download(filepath);
+        }
+    });
+});
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {
