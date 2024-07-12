@@ -3,29 +3,31 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const fs = require('fs');
 const app = express();
+
+// Security headers
 app.use(helmet());
 app.use((req, res, next) => {
     res.setHeader('X-Frame-Options', 'DENY');
     next();
-  });
-  
-  // Set Content Security Policy header to prevent framing
-  app.use((req, res, next) => {
+});
+
+app.use((req, res, next) => {
     res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
     next();
-  });
+});
 
 app.set('trust proxy', 1);
 
+// Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 20, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    message: 'Slow down brotha ,Too many requests from this IP, please try again after 15 minutes :) '
-  });
+    max: 20, // Limit each IP to 20 requests per `window` (here, per 15 minutes)
+    message: 'Slow down brotha, Too many requests from this IP, please try again after 15 minutes :)'
+});
 app.use(limiter);
 app.use(express.json());
-
 
 // CORS options to allow specific origins
 const corsOptions = {
@@ -35,21 +37,24 @@ const corsOptions = {
 
 // Apply CORS with the options
 app.use(cors(corsOptions));
+
+// Serve static files from the "public" directory
 app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
-  setHeaders: (res, path) => {
-      res.setHeader('Content-Disposition', 'inline');
-  }
+    setHeaders: (res, path) => {
+        res.setHeader('Content-Disposition', 'inline');
+    }
 }));
- 
-//limiter, 
-  app.use("/", require("./routes/music"));
-  
-  // Route for the homepage
-  //limiter,
-  app.get('/', (req, res) => {
-      res.send('Backend is running');
-  });
-  app.get('/downloads/:filename', (req, res) => {
+
+// Apply the music router
+app.use("/", require("./routes/music"));
+
+// Route for the homepage
+app.get('/', (req, res) => {
+    res.send('Backend is running');
+});
+
+// Endpoint to serve the downloaded files
+app.get('/downloads/:filename', (req, res) => {
     const filename = req.params.filename;
     const filepath = path.join(__dirname, '..', 'public', filename);
 
@@ -61,6 +66,7 @@ app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
         }
     });
 });
+  
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {
