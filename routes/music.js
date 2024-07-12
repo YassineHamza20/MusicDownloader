@@ -64,7 +64,7 @@ function isValidYouTubeUrl(url) {
  
 //music
 //, musicRateLimiter
-router.post('/music' , async (req, res) => {
+router.post('/music', async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -108,7 +108,6 @@ router.post('/music' , async (req, res) => {
       res.status(500).json({ success: false, message: 'Error processing request', error: error.message });
   }
 });
-
 //video
 //, musicRateLimiter
 router.post('/video', musicRateLimiter,async (req, res) => {

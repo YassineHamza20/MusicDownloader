@@ -46,7 +46,7 @@ app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
 }));
 
 // Apply the music router
-app.use("/", require("./routes/music"));
+app.use("/music", require("./routes/music"));
 
 // Route for the homepage
 app.get('/', (req, res) => {
@@ -66,7 +66,23 @@ app.get('/downloads/:filename', (req, res) => {
         }
     });
 });
-  
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+});
+
+
+
+
+
+
+
+
+
+
+
+
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {
@@ -94,5 +110,3 @@ app.get('/downloads/:filename', (req, res) => {
 
 // // Start the pinging process
 // keepServerAwake();
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
