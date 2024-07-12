@@ -8,7 +8,7 @@ services:
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
-        
+
   - type: web
     name: python-scripts
     env: python
