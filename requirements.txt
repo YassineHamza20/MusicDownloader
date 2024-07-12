@@ -1,4 +1,3 @@
 requests
 pytube
 pydub
-yt_dlp
