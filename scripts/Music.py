@@ -1,11 +1,12 @@
 import sys
 import requests
 import os
+import subprocess
 from pathlib import Path
 import re
+from pytube import YouTube
 from pydub import AudioSegment
 import traceback
-import youtube_dl
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -40,36 +41,31 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': f'{output_folder}/%(title)s.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }]
-        }
-
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(youtube_url, download=True)
-            title = sanitize_filename(info_dict.get('title', ''))
-            audio_file_path = f"{output_folder}/{title}.mp3"
+        yt = YouTube(youtube_url)
+        title = sanitize_filename(yt.title)
+        folder_path = Path(output_folder)
+        folder_path.mkdir(parents=True, exist_ok=True)
+        video = yt.streams.get_audio_only()
+        temp_file = video.download(output_path=folder_path)
+        output_path = folder_path / f"{title}.mp3"
+        audio_segment = AudioSegment.from_file(temp_file)
+        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
         # Download thumbnail
-        thumb_url = info_dict['thumbnail']
+        thumb_url = yt.thumbnail_url
         response = requests.get(thumb_url)
-        thumb_path = Path(output_folder) / "thumbnail.jpg"
+        thumb_path = folder_path / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
 
         # Embed album art
-        embed_album_art_ffmpeg(Path(audio_file_path), thumb_path)
+        embed_album_art_ffmpeg(output_path, thumb_path)
 
-        # Clean up thumbnail
+        # Clean up and log success
+        os.remove(temp_file)
         os.remove(thumb_path)
 
-        return audio_file_path  # Return the filename for Node.js to capture
-
+        return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error

@@ -1,5 +1,3 @@
 requests
-pydub
-yt-dlp
 pytube
-youtube_dl
+pydub
