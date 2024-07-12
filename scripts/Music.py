@@ -4,7 +4,7 @@ import os
 import subprocess
 from pathlib import Path
 import re
-import yt_dlp
+from pytube import YouTube
 from pydub import AudioSegment
 import traceback
 
@@ -26,7 +26,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     cmd = [
         ffmpeg_path, '-i', str(audio_path), '-i', str(image_path),
         '-map', '0:0', '-map', '1:0', '-c', 'copy', '-id3v2_version', '3',
-        '-metadata:s:v', 'title=Album cover', '-metadata:s:v', 'comment=Cover (front)',
+        '-metadata:s:v', 'title="Album cover"', '-metadata:s:v', 'comment="Cover (front)"',
         str(output_path)
     ]
     try:
@@ -41,25 +41,20 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': str(Path(output_folder) / '%(title)s.%(ext)s'),
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }]
-        }
-
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(youtube_url, download=True)
-            title = sanitize_filename(info_dict.get('title', ''))
-            output_path = Path(output_folder) / f"{title}.mp3"
+        yt = YouTube(youtube_url)
+        title = sanitize_filename(yt.title)
+        folder_path = Path(output_folder)
+        folder_path.mkdir(parents=True, exist_ok=True)
+        video = yt.streams.get_audio_only()
+        temp_file = video.download(output_path=folder_path)
+        output_path = folder_path / f"{title}.mp3"
+        audio_segment = AudioSegment.from_file(temp_file)
+        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
 
         # Download thumbnail
-        thumb_url = info_dict.get('thumbnail')
+        thumb_url = yt.thumbnail_url
         response = requests.get(thumb_url)
-        thumb_path = Path(output_folder) / "thumbnail.jpg"
+        thumb_path = folder_path / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
 
@@ -67,13 +62,10 @@ def download_video_as_mp3(youtube_url, output_folder):
         embed_album_art_ffmpeg(output_path, thumb_path)
 
         # Clean up and log success
+        os.remove(temp_file)
         os.remove(thumb_path)
 
         return output_path.name  # Return the filename for Node.js to capture
-    except yt_dlp.utils.DownloadError as e:
-        print(f"DownloadError: {e}", file=sys.stderr)
-        traceback.print_exc(file=sys.stderr)
-        return None
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
