@@ -5,7 +5,9 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const { spawn } = require('child_process');
 const app = express();
-
+ 
+  
+//rate limiter 
 app.use(helmet());
 app.use((req, res, next) => {
     res.setHeader('X-Frame-Options', 'DENY');
@@ -37,10 +39,7 @@ app.use(cors(corsOptions));
 app.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
-    if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
-        return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
-    }
-
+    
     const pythonScriptPath = path.join(__dirname,  'scripts', 'Music.py');
     const args = [youtube_url];
 
