@@ -98,7 +98,7 @@ router.post('/', async (req, res) => {
           if (code === 0 && output) {
               const lines = output.split('\n');
               const filename = lines[lines.length - 1].trim();
-              console.log(`Filename from Python script: ${filename}`);
+              console.log(`Filename from Python script: ${filename}`);  // Debugging statement
               const encodedFilename = encodeURIComponent(filename); // URL encode the output filename
               const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodedFilename}`;
               res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
@@ -116,7 +116,6 @@ router.post('/', async (req, res) => {
       res.status(500).json({ success: false, message: 'Error processing request', error: error.message });
   }
 });
-
 
 
 

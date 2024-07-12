@@ -39,7 +39,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Serve static files from the "public" directory
-app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
+app.use('/downloads', express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path) => {
         res.setHeader('Content-Disposition', 'inline');
     }
@@ -56,9 +56,9 @@ app.get('/', (req, res) => {
 // Endpoint to serve the downloaded files
 app.get('/downloads/:filename', (req, res) => {
     const filename = req.params.filename;
-    const filepath = path.join(__dirname, '..', 'public', filename);
+    const filepath = path.join(__dirname, 'public', filename);
 
-    console.log(`Serving file from path: ${filepath}`);
+    console.log(`Serving file from path: ${filepath}`);  // Debugging statement
 
     fs.access(filepath, fs.constants.F_OK, (err) => {
         if (err) {
@@ -73,7 +73,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
-
 
 
 
