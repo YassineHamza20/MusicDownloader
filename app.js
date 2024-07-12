@@ -46,7 +46,7 @@ app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
 }));
 
 // Apply the music router
-app.use("/music", require("./routes/music"));
+app.use("/", require("./routes/music"));
 
 // Route for the homepage
 app.get('/', (req, res) => {
