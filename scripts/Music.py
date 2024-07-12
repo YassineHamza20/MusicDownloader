@@ -1,5 +1,4 @@
 import sys
-import requests
 import subprocess
 from io import BytesIO
 import re
@@ -32,11 +31,16 @@ def download_video_as_mp3(youtube_url):
             info_dict = ydl.extract_info(youtube_url, download=True)
             title = sanitize_filename(info_dict.get('title', ''))
 
+        # Convert audio to MP3
         audio_data = BytesIO()
-        with open(f"{title}.mp3", "rb") as f:
+        audio_file_path = f"{title}.mp3"
+        with open(audio_file_path, "rb") as f:
             audio_data.write(f.read())
-
-        return audio_data, title
+        
+        # Clean up the downloaded file
+        os.remove(audio_file_path)
+        
+        return audio_data.getvalue(), title
 
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
@@ -49,7 +53,7 @@ if __name__ == "__main__":
     youtube_url = sys.argv[1]
     audio_data, title = download_video_as_mp3(youtube_url)
     if audio_data:
-        sys.stdout.buffer.write(audio_data.getvalue())
+        sys.stdout.buffer.write(audio_data)
         sys.exit(0)
     else:
         sys.exit(1)

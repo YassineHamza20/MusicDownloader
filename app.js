@@ -21,8 +21,8 @@ app.set('trust proxy', 1);
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 20, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    message: 'Slow down brotha ,Too many requests from this IP, please try again after 15 minutes :) '
+    max: 20, // Limit each IP to 20 requests per `window` (here, per 15 minutes)
+    message: 'Slow down, too many requests from this IP, please try again after 15 minutes.'
 });
 app.use(limiter);
 app.use(express.json());
@@ -33,19 +33,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-function isValidYouTubeUrl(url) {
-  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
-  return regex.test(url);
-}
 
 app.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
+ 
 
-    if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
-        return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
-    }
-
-    const pythonScriptPath = path.join(__dirname, 'scripts', 'Music.py');
+    const pythonScriptPath = path.join(__dirname,   'scripts', 'Music.py');
     const args = [youtube_url];
 
     try {
@@ -64,7 +57,7 @@ app.post('/music', async (req, res) => {
         process.on('close', (code) => {
             if (code === 0 && output.length > 0) {
                 res.setHeader('Content-Type', 'audio/mpeg');
-                res.setHeader('Content-Disposition', 'attachment; filename="downloaded.mp3"');
+                res.setHeader('Content-Disposition', `attachment; filename="${sanitizeFilename(youtube_url)}.mp3"`);
                 res.send(output);
             } else {
                 console.error('Python script failed with code:', code, 'and error:', scriptError);
@@ -89,3 +82,8 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+// Utility function to sanitize filename
+function sanitizeFilename(filename) {
+    return filename.replace(/[<>:"/\\|?*]+/g, '_');
+}

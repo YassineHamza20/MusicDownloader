@@ -8,12 +8,12 @@ services:
     envVars:
       - key: PATH
         value: "/usr/bin/ffmpeg:$PATH"
-
+        
   - type: web
     name: python-scripts
     env: python
     plan: free
-    buildCommand: "pip uninstall -y pytube && pip install -r requirements.txt && apt-get update && apt-get install -y ffmpeg"
+    buildCommand: "pip install -r requirements.txt && apt-get update && apt-get install -y ffmpeg"
     startCommand: "flask run --host=0.0.0.0 --port $PORT"
     envVars:
       - key: PATH
