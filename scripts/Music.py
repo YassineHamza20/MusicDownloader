@@ -1,49 +1,41 @@
 import sys
 import requests
-import os
 import subprocess
-from pathlib import Path
+from io import BytesIO
 import re
 from pydub import AudioSegment
 import traceback
 import yt_dlp
 
-# Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
 ffprobe_path = 'ffprobe'
 
-# Configure pydub to use the ffmpeg installed on the system
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
-    """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
 
-def embed_album_art_ffmpeg(audio_path, image_path):
-    """Embeds album art into an MP3 file using FFmpeg."""
-    output_path = audio_path.with_suffix('.temp.mp3')
+def embed_album_art_ffmpeg(audio_data, image_data):
+    output = BytesIO()
     cmd = [
-        ffmpeg_path, '-i', str(audio_path), '-i', str(image_path),
+        ffmpeg_path, '-i', 'pipe:0', '-i', 'pipe:1',
         '-map', '0:0', '-map', '1:0', '-c', 'copy', '-id3v2_version', '3',
         '-metadata:s:v', 'title=Album cover', '-metadata:s:v', 'comment=Cover (front)',
-        str(output_path)
+        'pipe:2'
     ]
-    try:
-        result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.stderr:
-            print("FFmpeg stderr:", result.stderr.decode(), file=sys.stderr)
-    except subprocess.CalledProcessError as e:
-        print("FFmpeg command failed with error:", e.stderr.decode(), file=sys.stderr)
-        raise e
+    process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate(input=audio_data.read() + image_data.read())
+    if process.returncode != 0:
+        raise subprocess.CalledProcessError(process.returncode, cmd, output=stdout, stderr=stderr)
+    output.write(stdout)
+    return output
 
-    os.replace(output_path, audio_path)
-
-def download_video_as_mp3(youtube_url, output_folder):
+def download_video_as_mp3(youtube_url):
     try:
         ydl_opts = {
             'format': 'bestaudio/best',
-            'outtmpl': str(Path(output_folder) / '%(title)s.%(ext)s'),
+            'outtmpl': '%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -56,35 +48,31 @@ def download_video_as_mp3(youtube_url, output_folder):
             title = sanitize_filename(info_dict.get('title', ''))
             thumbnail_url = info_dict.get('thumbnail', '')
 
-        audio_path = Path(output_folder) / f"{title}.mp3"
+        audio_data = BytesIO()
+        with open(f"{title}.mp3", "rb") as f:
+            audio_data.write(f.read())
 
-        # Download thumbnail
         if thumbnail_url:
             response = requests.get(thumbnail_url)
-            thumb_path = Path(output_folder) / "thumbnail.jpg"
-            with open(thumb_path, 'wb') as thumb_file:
-                thumb_file.write(response.content)
+            image_data = BytesIO(response.content)
 
-            # Embed album art
-            embed_album_art_ffmpeg(audio_path, thumb_path)
+            audio_with_art = embed_album_art_ffmpeg(audio_data, image_data)
+            return audio_with_art, title
+        else:
+            return audio_data, title
 
-            # Clean up
-            os.remove(thumb_path)
-
-        return audio_path.name  # Return the filename for Node.js to capture
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
-        return None  # Return None in case of error
+        return None, None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
-    result = download_video_as_mp3(youtube_url, output_folder)
-    if result:
-        print(result)
+    audio_data, title = download_video_as_mp3(youtube_url)
+    if audio_data:
+        sys.stdout.buffer.write(audio_data.getvalue())
         sys.exit(0)
     else:
         sys.exit(1)
