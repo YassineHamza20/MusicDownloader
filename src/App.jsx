@@ -29,7 +29,7 @@ function App() {
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
         <h3 style={{ marginTop: '-50px', color: 'white' }}>High Quality Music Downloader  </h3>
-        <h3 style={{ marginTop: '-50px', color: 'white' }}>Server down dua to pytube library error - coming back soon sorry  </h3> 
+        <h3 style={{ marginTop: '-10px', color: 'white' }}>Server down dua to pytube library error - coming back soon sorry  </h3> 
       </div>
     
       <div style={{ marginBottom: '-10px', textAlign: 'center' }}>
