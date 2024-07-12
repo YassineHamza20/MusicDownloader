@@ -8,6 +8,7 @@ from pytube import YouTube, exceptions
 from pydub import AudioSegment
 import traceback
 import time
+import browser_cookie3
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -54,7 +55,9 @@ def download_video_as_mp3(youtube_url, output_folder):
         raise Exception("Maximum retries exceeded")
 
     try:
-        yt = YouTube(youtube_url)
+        # Get cookies from browser
+        cookies = browser_cookie3.chrome(domain_name='.youtube.com')
+        yt = YouTube(youtube_url, cookies=cookies)
         title = sanitize_filename(yt.title)
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
@@ -66,7 +69,7 @@ def download_video_as_mp3(youtube_url, output_folder):
 
         # Download thumbnail
         thumb_url = yt.thumbnail_url
-        response = requests.get(thumb_url)
+        response = requests.get(thumb_url, cookies=cookies)
         thumb_path = folder_path / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
