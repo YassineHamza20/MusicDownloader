@@ -4,10 +4,9 @@ import os
 import subprocess
 from pathlib import Path
 import re
-from pytube import YouTube, exceptions
 from pydub import AudioSegment
 import traceback
-import time
+import yt_dlp
 
 # Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
@@ -16,12 +15,6 @@ ffprobe_path = 'ffprobe'
 # Configure pydub to use the ffmpeg installed on the system
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
-
-# Define your proxy settings
-proxy = {
-    'http': 'http://47.88.31.196:8080',
-    'https': 'http://47.88.31.196:8080'
-}
 
 def sanitize_filename(filename):
     """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
@@ -47,33 +40,25 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder):
-    def retry_get_audio_only(yt, retries=5, backoff_factor=0.5):
-        for attempt in range(retries):
-            try:
-                return yt.streams.get_audio_only()
-            except exceptions.VideoUnavailable:
-                print(f"Video unavailable, attempt {attempt + 1} of {retries}")
-                time.sleep(backoff_factor * (2 ** attempt))
-            except exceptions.PytubeError as e:
-                print(f"Pytube error: {e}, attempt {attempt + 1} of {retries}")
-                time.sleep(backoff_factor * (2 ** attempt))
-        raise Exception("Maximum retries exceeded")
-
     try:
-        yt = YouTube(youtube_url)
-        title = sanitize_filename(yt.title)
-        folder_path = Path(output_folder)
-        folder_path.mkdir(parents=True, exist_ok=True)
-        video = retry_get_audio_only(yt)
-        temp_file = video.download(output_path=folder_path)
-        output_path = folder_path / f"{title}.mp3"
-        audio_segment = AudioSegment.from_file(temp_file)
-        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': str(Path(output_folder) / '%(title)s.%(ext)s'),
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '320',
+            }],
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(youtube_url, download=True)
+            title = sanitize_filename(info_dict.get('title', 'audio'))
+            output_path = Path(output_folder) / f"{title}.mp3"
 
         # Download thumbnail
-        thumb_url = yt.thumbnail_url
-        response = requests.get(thumb_url, proxies=proxy)
-        thumb_path = folder_path / "thumbnail.jpg"
+        thumb_url = info_dict.get('thumbnail')
+        response = requests.get(thumb_url)
+        thumb_path = Path(output_folder) / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
 
@@ -81,7 +66,6 @@ def download_video_as_mp3(youtube_url, output_folder):
         embed_album_art_ffmpeg(output_path, thumb_path)
 
         # Clean up and log success
-        os.remove(temp_file)
         os.remove(thumb_path)
 
         return output_path.name  # Return the filename for Node.js to capture
