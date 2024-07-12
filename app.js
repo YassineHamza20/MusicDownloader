@@ -41,7 +41,7 @@ app.use(cors(corsOptions));
 // Serve static files from the "public" directory
 app.use('/downloads', express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path) => {
-        res.setHeader('Content-Disposition', 'inline');
+        res.setHeader('Content-Disposition', 'attachment');
     }
 }));
 
@@ -64,6 +64,7 @@ app.get('/downloads/:filename', (req, res) => {
         if (err) {
             res.status(404).send('File not found');
         } else {
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
             res.download(filepath);
         }
     });
@@ -73,7 +74,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
-
 
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
