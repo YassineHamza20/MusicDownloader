@@ -64,6 +64,7 @@ def download_video_as_mp3(youtube_url, output_folder):
             info_dict = ydl.extract_info(youtube_url, download=True)
             title = sanitize_filename(info_dict.get('title', ''))
             output_path = Path(output_folder) / f"{title}.mp3"
+            print(f"Output path: {output_path}")
 
         # Download thumbnail
         thumb_url = info_dict.get('thumbnail')
@@ -82,6 +83,7 @@ def download_video_as_mp3(youtube_url, output_folder):
         # Clean up and log success
         os.remove(thumb_path)
 
+        print(f"Returning filename: {output_path.name}")
         return output_path.name  # Return the filename for Node.js to capture
     except yt_dlp.utils.DownloadError as e:
         print(f"DownloadError: {e}", file=sys.stderr)
@@ -105,6 +107,7 @@ if __name__ == "__main__":
         sys.exit(1)
     youtube_url = sys.argv[1]
     output_folder = Path(__file__).resolve().parent.parent / 'public'
+    print(f"Output folder: {output_folder}")
     result = download_video_as_mp3(youtube_url, output_folder)
     if result:
         print(result)

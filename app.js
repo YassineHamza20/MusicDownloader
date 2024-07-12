@@ -46,7 +46,7 @@ app.use('/downloads', express.static(path.join(__dirname, '..', 'public'), {
 }));
 
 // Apply the music router
-app.use("/", require("./routes/music"));
+app.use("/music", require("./routes/music"));
 
 // Route for the homepage
 app.get('/', (req, res) => {
@@ -57,6 +57,8 @@ app.get('/', (req, res) => {
 app.get('/downloads/:filename', (req, res) => {
     const filename = req.params.filename;
     const filepath = path.join(__dirname, '..', 'public', filename);
+
+    console.log(`Serving file from path: ${filepath}`);
 
     fs.access(filepath, fs.constants.F_OK, (err) => {
         if (err) {
@@ -71,14 +73,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
-
-
-
-
-
-
-
-
 
 
 

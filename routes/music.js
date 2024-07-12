@@ -63,8 +63,15 @@ function isValidYouTubeUrl(url) {
 
  
 //music
-//, musicRateLimiter
-router.post('/music', async (req, res) => {
+//, musicRateLimiter 
+
+
+
+
+
+
+
+router.post('/', async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -91,6 +98,7 @@ router.post('/music', async (req, res) => {
           if (code === 0 && output) {
               const lines = output.split('\n');
               const filename = lines[lines.length - 1].trim();
+              console.log(`Filename from Python script: ${filename}`);
               const encodedFilename = encodeURIComponent(filename); // URL encode the output filename
               const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodedFilename}`;
               res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
@@ -108,6 +116,18 @@ router.post('/music', async (req, res) => {
       res.status(500).json({ success: false, message: 'Error processing request', error: error.message });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
 //video
 //, musicRateLimiter
 router.post('/video', musicRateLimiter,async (req, res) => {
