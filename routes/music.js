@@ -63,9 +63,8 @@ function isValidYouTubeUrl(url) {
 
  
 //music
-//, musicRateLimiter 
-
-router.post('/', async (req, res) => {
+//, musicRateLimiter
+router.post('/music',  async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -92,7 +91,6 @@ router.post('/', async (req, res) => {
           if (code === 0 && output) {
               const lines = output.split('\n');
               const filename = lines[lines.length - 1].trim();
-              console.log(`Filename from Python script: ${filename}`);  // Debugging statement
               const encodedFilename = encodeURIComponent(filename); // URL encode the output filename
               const downloadUrl = `${req.protocol}://${req.get('host')}/downloads/${encodedFilename}`;
               res.status(200).json({ success: true, message: 'Song downloaded successfully', downloadUrl });
@@ -100,25 +98,16 @@ router.post('/', async (req, res) => {
               console.error('Python script failed with code:', code, 'and error:', scriptError);
               res.status(500).json({
                   success: false,
-                  message: scriptError || 'Unknown error detected, please check logs',
+                  message: 'Too many requests sorry',
                   error: scriptError || 'Unknown error detected, please check logs'
               });
           }
       });
   } catch (error) {
       console.error('Error spawning Python script:', error);
-      res.status(500).json({ success: false, message: 'Error processing request', error: error.message });
+      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
   }
 });
-
-
-
-
-
-
-
-
-
 
 //video
 //, musicRateLimiter
