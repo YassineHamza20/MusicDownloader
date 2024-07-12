@@ -105,7 +105,7 @@ router.post('/music' , async (req, res) => {
       });
   } catch (error) {
       console.error('Error spawning Python script:', error);
-      res.status(500).json({ success: false, message: 'Too many requests sorry', error: error.message });
+      res.status(500).json({ success: false, message: 'Error processing request', error: error.message });
   }
 });
 

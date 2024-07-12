@@ -59,6 +59,7 @@ def download_video_as_mp3(youtube_url, output_folder):
         # Download thumbnail
         thumb_url = info_dict.get('thumbnail')
         response = requests.get(thumb_url)
+        response.raise_for_status()  # Ensure the request was successful
         thumb_path = Path(output_folder) / "thumbnail.jpg"
         with open(thumb_path, 'wb') as thumb_file:
             thumb_file.write(response.content)
@@ -74,6 +75,10 @@ def download_video_as_mp3(youtube_url, output_folder):
         print(f"DownloadError: {e}", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         return None
+    except requests.RequestException as e:
+        print(f"RequestException: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        return None
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
@@ -83,7 +88,7 @@ if __name__ == "__main__":
         print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public')
+    output_folder = Path(__file__).resolve().parent.parent / 'public'
     result = download_video_as_mp3(youtube_url, output_folder)
     if result:
         print(result)
