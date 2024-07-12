@@ -3,18 +3,19 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const { spawn } = require('child_process');
 const app = express();
+
 app.use(helmet());
 app.use((req, res, next) => {
     res.setHeader('X-Frame-Options', 'DENY');
     next();
-  });
-  
-  // Set Content Security Policy header to prevent framing
-  app.use((req, res, next) => {
+});
+
+app.use((req, res, next) => {
     res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
     next();
-  });
+});
 
 app.set('trust proxy', 1);
 
@@ -22,26 +23,21 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 20, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
     message: 'Slow down brotha ,Too many requests from this IP, please try again after 15 minutes :) '
-  });
+});
 app.use(limiter);
 app.use(express.json());
 
-
-// CORS options to allow specific origins
 const corsOptions = {
     origin: ['https://melodyaddicts.netlify.app', 'https://songsdownloader.onrender.com'],
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
-// Apply CORS with the options
 app.use(cors(corsOptions));
 app.use('/downloads', express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path) => {
         res.setHeader('Content-Disposition', 'inline');
     }
-  }));
-  // Apply the router
-//limiter, 
+}));
   app.use("/",limiter,require("./routes/music"));
   
   // Route for the homepage
@@ -49,7 +45,9 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
   app.get('/', (req, res) => {
       res.send('Backend is running');
   });
-  
+  const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
 // Serve static files from the 'public' directory
 // app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 //     setHeaders: (res, path) => {
@@ -77,5 +75,3 @@ app.use('/downloads', express.static(path.join(__dirname, 'public'), {
 
 // // Start the pinging process
 // keepServerAwake();
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
