@@ -64,7 +64,7 @@ function isValidYouTubeUrl(url) {
  
 //music
 //, musicRateLimiter
-router.post('/music',musicRateLimiter, async (req, res) => {
+router.post('/musicc',musicRateLimiter, async (req, res) => {
   const { youtube_url } = req.body;
 
   if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
@@ -98,7 +98,7 @@ router.post('/music',musicRateLimiter, async (req, res) => {
               console.error('Python script failed with code:', code, 'and error:', scriptError);
               res.status(500).json({
                   success: false,
-                  message: 'Too many requests sorry',
+                  message: scriptError || 'Unknown error detected, please check logs',
                   error: scriptError || 'Unknown error detected, please check logs'
               });
           }

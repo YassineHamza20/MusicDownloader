@@ -1,17 +1,9 @@
 import sys
 import os
-import subprocess
-from io import BytesIO
 import re
-from pydub import AudioSegment
+from io import BytesIO
 import traceback
 import yt_dlp
-
-ffmpeg_path = 'ffmpeg'
-ffprobe_path = 'ffprobe'
-
-AudioSegment.converter = ffmpeg_path
-AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
@@ -31,17 +23,16 @@ def download_video_as_mp3(youtube_url):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(youtube_url, download=True)
             title = sanitize_filename(info_dict.get('title', ''))
+            audio_file_path = f"{title}.mp3"
 
-        # Convert audio to MP3
-        audio_data = BytesIO()
-        audio_file_path = f"{title}.mp3"
+        # Read the audio file into memory
         with open(audio_file_path, "rb") as f:
-            audio_data.write(f.read())
+            audio_data = f.read()
         
         # Clean up the downloaded file
         os.remove(audio_file_path)
         
-        return audio_data.getvalue(), title
+        return audio_data, title
 
     except Exception as e:
         traceback.print_exc(file=sys.stderr)
@@ -49,7 +40,7 @@ def download_video_as_mp3(youtube_url):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python your_script.py <youtube_url>", file=sys.stderr)
+        print("Usage: python Music.py <youtube_url>", file=sys.stderr)
         sys.exit(1)
     youtube_url = sys.argv[1]
     audio_data, title = download_video_as_mp3(youtube_url)
