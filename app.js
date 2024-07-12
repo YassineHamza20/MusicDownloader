@@ -26,6 +26,13 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 app.use(express.json());
+
+const corsOptions = {
+    origin: ['https://melodyaddicts.netlify.app', 'https://songs-kd5e.onrender.com'],
+    optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
 function sanitizeFilename(filename) {
   return filename.replace(/[<>:"/\\|?*]+/g, '_');
 }
@@ -36,17 +43,13 @@ function isValidYouTubeUrl(url) {
   return regex.test(url);
 }
 
-const corsOptions = {
-    origin: ['https://melodyaddicts.netlify.app', 'https://songs-kd5e.onrender.com'],
-    optionsSuccessStatus: 200 // For legacy browser support
-};
-
-app.use(cors(corsOptions));
-
 app.post('/music', async (req, res) => {
     const { youtube_url } = req.body;
 
-    
+    if (!youtube_url || !isValidYouTubeUrl(youtube_url)) {
+        return res.status(400).json({ success: false, message: 'Please insert a valid YouTube URL' });
+    }
+
     const pythonScriptPath = path.join(__dirname, 'scripts', 'Music.py');
     const args = [youtube_url];
 
