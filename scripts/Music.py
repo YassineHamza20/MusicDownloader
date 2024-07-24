@@ -41,11 +41,19 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
+        print(f"Starting download for URL: {youtube_url}")
         yt = YouTube(youtube_url)
         title = sanitize_filename(yt.title)
+        print(f"Video title: {title}")
+        
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
         video = yt.streams.get_audio_only()
+        
+        if not video:
+            print("No audio-only stream available.")
+            return None
+        
         temp_file = video.download(output_path=folder_path)
         output_path = folder_path / f"{title}.mp3"
         audio_segment = AudioSegment.from_file(temp_file)
@@ -65,8 +73,10 @@ def download_video_as_mp3(youtube_url, output_folder):
         os.remove(temp_file)
         os.remove(thumb_path)
 
+        print(f"Download and conversion successful: {output_path}")
         return output_path.name  # Return the filename for Node.js to capture
     except Exception as e:
+        print("An error occurred:", e, file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         return None  # Return None in case of error
 
