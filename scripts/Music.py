@@ -4,7 +4,8 @@ import os
 import subprocess
 from pathlib import Path
 import re
-from pytube import YouTube
+from pytubefix import YouTube
+from pytubefix.cli import on_progress
 from pydub import AudioSegment
 import traceback
 
@@ -42,7 +43,7 @@ def embed_album_art_ffmpeg(audio_path, image_path):
 def download_video_as_mp3(youtube_url, output_folder):
     try:
         print(f"Starting download for URL: {youtube_url}")
-        yt = YouTube(youtube_url)
+        yt = YouTube(youtube_url, on_progress_callback=on_progress)
         title = sanitize_filename(yt.title)
         print(f"Video title: {title}")
         
@@ -54,10 +55,13 @@ def download_video_as_mp3(youtube_url, output_folder):
             print("No audio-only stream available.")
             return None
         
-        temp_file = video.download(output_path=folder_path)
         output_path = folder_path / f"{title}.mp3"
-        audio_segment = AudioSegment.from_file(temp_file)
-        audio_segment.export(output_path, format='mp3', bitrate="320k", tags={"title": yt.title})
+        video.download(output_path=folder_path, mp3=True)
+        
+        # Move and rename the downloaded file
+        temp_file = folder_path / f"{title}.mp4"
+        if temp_file.exists():
+            temp_file.rename(output_path)
 
         # Download thumbnail
         thumb_url = yt.thumbnail_url
@@ -70,7 +74,6 @@ def download_video_as_mp3(youtube_url, output_folder):
         embed_album_art_ffmpeg(output_path, thumb_path)
 
         # Clean up and log success
-        os.remove(temp_file)
         os.remove(thumb_path)
 
         print(f"Download and conversion successful: {output_path}")
