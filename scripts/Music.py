@@ -32,9 +32,9 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     try:
         result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.stderr:
-            print("FFmpeg stderr:", result.stderr.decode())
+            print("FFmpeg stderr:", result.stderr.decode(), file=sys.stderr)
     except subprocess.CalledProcessError as e:
-        print("FFmpeg command failed with error:", e.stderr.decode())
+        print("FFmpeg command failed with error:", e.stderr.decode(), file=sys.stderr)
         raise e
 
     os.replace(output_path, audio_path)
