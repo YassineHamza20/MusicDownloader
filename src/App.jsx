@@ -29,7 +29,7 @@ function App() {
       <img src="/Melody.png" alt="MelodyAddict Logo" className="melody-logo" />
     </div>
         <h3 style={{ marginTop: '-50px', color: 'white' }}>High Quality Music Downloader  </h3>
-        <h5 style={{ marginTop: '-10px', color: 'red' }}>Server down due to pytube library HTTP Error 400</h5> 
+        <h5 style={{ marginTop: '-10px', color: 'red' }}>Server down due to pytube library New change HTTP Error 400</h5> 
       </div>
     
       <div style={{ marginBottom: '-10px', textAlign: 'center' }}>
