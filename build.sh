@@ -10,5 +10,5 @@ npm install
 echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Any other build steps can be added here
- 
+echo "Installing FFmpeg..."
+apt-get update && apt-get install -y ffmpeg
