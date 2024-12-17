@@ -35,7 +35,7 @@ def download_video_as_mp3(youtube_url, output_folder):
         folder_path = Path(output_folder)
         folder_path.mkdir(parents=True, exist_ok=True)
 
-        # Use yt-dlp to download audio only
+        # Use cookies file with yt-dlp
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': str(folder_path / '%(title)s.%(ext)s'),
@@ -44,6 +44,7 @@ def download_video_as_mp3(youtube_url, output_folder):
                 'preferredcodec': 'mp3',
                 'preferredquality': '320',
             }],
+            'cookiefile': 'cookies.txt'  # Add your cookies.txt file here
         }
 
         with YoutubeDL(ydl_opts) as ydl:
