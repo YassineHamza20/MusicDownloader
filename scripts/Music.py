@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import subprocess
 from flask import Flask, request, send_file, jsonify
@@ -6,6 +7,7 @@ from pathlib import Path
 from yt_dlp import YoutubeDL
 import re
 import traceback
+import socket
 
 app = Flask(__name__)
 
@@ -20,12 +22,12 @@ ffmpeg_path = 'ffmpeg'
 def sanitize_filename(filename):
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
 
-# Download and convert video to MP3
-def download_video_as_mp3(youtube_url):
+# Download YouTube video as MP3
+def download_video_as_mp3(youtube_url, output_folder):
     try:
         ydl_opts = {
             'format': 'bestaudio/best',
-            'outtmpl': str(Path(OUTPUT_FOLDER) / '%(title)s.%(ext)s'),
+            'outtmpl': str(Path(output_folder) / '%(title)s.%(ext)s'),
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -35,12 +37,13 @@ def download_video_as_mp3(youtube_url):
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(youtube_url, download=True)
             title = sanitize_filename(info['title'])
-            mp3_path = os.path.join(OUTPUT_FOLDER, f"{title}.mp3")
+            mp3_path = os.path.join(output_folder, f"{title}.mp3")
             return mp3_path
     except Exception as e:
         print(traceback.format_exc())
         return None
 
+# Flask route
 @app.route('/music', methods=['POST'])
 def download():
     try:
@@ -49,7 +52,7 @@ def download():
         if not youtube_url:
             return jsonify({"success": False, "message": "YouTube URL not provided"}), 400
 
-        mp3_path = download_video_as_mp3(youtube_url)
+        mp3_path = download_video_as_mp3(youtube_url, OUTPUT_FOLDER)
         if not mp3_path or not os.path.isfile(mp3_path):
             return jsonify({"success": False, "message": "Failed to process video"}), 500
 
@@ -58,5 +61,19 @@ def download():
         print(traceback.format_exc())
         return jsonify({"success": False, "message": "Server error occurred"}), 500
 
+# Function to get a dynamic free port
+def get_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(('', 0))  # Bind to port 0 to get a free port
+        return s.getsockname()[1]  # Return the assigned port
+
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    if len(sys.argv) == 2:
+        youtube_url = sys.argv[1]
+        output_folder = Path.home() / 'Downloads'
+        download_video_as_mp3(youtube_url, output_folder)
+    else:
+        # Run Flask with dynamic port
+        port = get_free_port()
+        print(f"Running Flask server on dynamic port {port}")
+        app.run(debug=True, host='0.0.0.0', port=port)
