@@ -8,24 +8,20 @@ from pytube import YouTube
 from pydub import AudioSegment
 import traceback
 
-# Check for ffmpeg and ffprobe availability
+# Set paths to ffmpeg and ffprobe
 ffmpeg_path = 'ffmpeg'
 ffprobe_path = 'ffprobe'
-try:
-    subprocess.run([ffmpeg_path, '-version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    subprocess.run([ffprobe_path, '-version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-except subprocess.CalledProcessError as e:
-    print("FFmpeg or FFprobe not found or not working:", e, file=sys.stderr)
-    sys.exit(1)
 
-# Configure pydub to use the ffmpeg installed on the system
+# Configure pydub to use the system-installed ffmpeg
 AudioSegment.converter = ffmpeg_path
 AudioSegment.ffprobe = ffprobe_path
 
 def sanitize_filename(filename):
+    """Sanitize filename by removing or replacing invalid characters and retaining Unicode."""
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
 
 def embed_album_art_ffmpeg(audio_path, image_path):
+    """Embeds album art into an MP3 file using FFmpeg."""
     output_path = audio_path.with_suffix('.temp.mp3')
     cmd = [
         ffmpeg_path, '-i', str(audio_path), '-i', str(image_path),
@@ -35,13 +31,10 @@ def embed_album_art_ffmpeg(audio_path, image_path):
     ]
     try:
         result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.stderr:
-            print("FFmpeg stderr:", result.stderr.decode(), file=sys.stderr)
+        os.replace(output_path, audio_path)
     except subprocess.CalledProcessError as e:
-        print("FFmpeg command failed with error:", e.stderr.decode(), file=sys.stderr)
+        print("FFmpeg command failed:", e.stderr.decode())
         raise e
-
-    os.replace(output_path, audio_path)
 
 def download_video_as_mp3(youtube_url, output_folder):
     try:
