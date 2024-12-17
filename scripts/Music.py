@@ -18,6 +18,11 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 # Path to FFmpeg
 ffmpeg_path = 'ffmpeg'
 COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.txt")
+if os.path.isfile(COOKIES_FILE):
+    print(f"Cookies file found: {COOKIES_FILE}")
+else:
+    print("Error: 'cookies.txt' not found. Ensure the file exists in the script directory.")
+    raise FileNotFoundError("Error: 'cookies.txt' not found. Ensure the file exists in the script directory.")
 # Sanitize filename
 def sanitize_filename(filename):
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
