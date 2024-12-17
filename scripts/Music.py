@@ -17,11 +17,12 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 # Path to FFmpeg
 ffmpeg_path = 'ffmpeg'
-
+COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.txt")
 # Sanitize filename
 def sanitize_filename(filename):
     return re.sub(r'[<>:"/\\|?*]+', '_', filename)
-
+if not os.path.isfile(COOKIES_FILE):
+    raise FileNotFoundError("Error: 'cookies.txt' not found. Ensure the file exists in the script directory.")
 # Download YouTube video as MP3
 def download_video_as_mp3(youtube_url, output_folder):
     try:
