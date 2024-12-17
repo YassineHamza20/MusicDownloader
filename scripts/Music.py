@@ -7,6 +7,10 @@ from yt_dlp import YoutubeDL
 from pydub import AudioSegment
 import traceback
 
+
+if not os.path.isfile('cookies.txt'):
+    raise FileNotFoundError("cookies.txt not found in the script directory!")
+
 ffmpeg_path = 'ffmpeg'
 AudioSegment.converter = ffmpeg_path
 
