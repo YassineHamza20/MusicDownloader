@@ -1,5 +1,9 @@
-Flask
-requests
-pytube
-pydub
-yt-dlp
+# Flask
+# requests
+# pytube
+# pydub
+# yt-dlp
+Flask==2.3.3
+Flask-CORS==4.0.0
+yt-dlp==2023.11.16
+Werkzeug==2.3.7

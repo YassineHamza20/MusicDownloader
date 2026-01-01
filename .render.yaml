@@ -1,24 +1,52 @@
+# services:
+#   - type: web
+#     name: node-backend
+#     env: node
+#     plan: free
+#     buildCommand: "npm install && apt-get update && apt-get install -y ffmpeg"
+#     startCommand: "node app.js"
+#     envVars:
+#       - key: PATH
+#         value: "/usr/bin/ffmpeg:$PATH"
+        
+#   - type: web
+#     name: python-scripts
+#     env: python
+#     plan: free
+#     buildCommand: "pip install -r requirements.txt && apt-get update && apt-get install -y ffmpeg"
+#     startCommand: "flask run --host=0.0.0.0 --port $PORT"
+#     envVars:
+#       - key: PATH
+#         value: "/usr/bin/ffmpeg:$PATH"
+#       - key: FLASK_APP
+#         value: "app.py"
+#       - key: FLASK_ENV
+#         value: "production"
+
 services:
   - type: web
-    name: node-backend
+    name: youtube-mp3-backend
     env: node
     plan: free
-    buildCommand: "npm install && apt-get update && apt-get install -y ffmpeg"
-    startCommand: "node app.js"
+    region: oregon
+    buildCommand: |
+      # Install Node.js dependencies
+      npm install
+      # Install Python dependencies
+      pip install -r requirements.txt
+      # Install FFmpeg
+      apt-get update && apt-get install -y ffmpeg
+    startCommand: ./start.sh
     envVars:
-      - key: PATH
-        value: "/usr/bin/ffmpeg:$PATH"
-        
-  - type: web
-    name: python-scripts
-    env: python
-    plan: free
-    buildCommand: "pip install -r requirements.txt && apt-get update && apt-get install -y ffmpeg"
-    startCommand: "flask run --host=0.0.0.0 --port $PORT"
-    envVars:
-      - key: PATH
-        value: "/usr/bin/ffmpeg:$PATH"
-      - key: FLASK_APP
-        value: "app.py"
-      - key: FLASK_ENV
-        value: "production"
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: PYTHONPATH
+        value: /usr/local/bin/python3
+    healthCheckPath: /health
+    autoDeploy: true
+    disk:
+      name: downloads
+      mountPath: /opt/render/project/src/downloads
+      sizeGB: 1
