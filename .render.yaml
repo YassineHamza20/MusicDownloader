@@ -22,7 +22,6 @@
 #         value: "app.py"
 #       - key: FLASK_ENV
 #         value: "production"
-
 services:
   - type: web
     name: youtube-mp3-backend
@@ -36,14 +35,14 @@ services:
       pip install -r requirements.txt
       # Install FFmpeg
       apt-get update && apt-get install -y ffmpeg
-    startCommand: ./start.sh
+    startCommand: node server.js  # CHANGE THIS LINE
     envVars:
       - key: PORT
         value: 10000
       - key: NODE_ENV
         value: production
-      - key: PYTHONPATH
-        value: /usr/local/bin/python3
+      - key: RENDER
+        value: "true"
     healthCheckPath: /health
     autoDeploy: true
     disk:
